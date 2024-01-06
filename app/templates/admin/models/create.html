@@ -1,0 +1,66 @@
+{% extends 'admin/master.html' %}
+{% import 'admin/lib.html' as lib with context %}
+{% from 'admin/lib.html' import extra with context %} {# backward compatible #}
+
+{% block head %}
+{{ super() }}
+{{ lib.form_css() }}
+{% endblock %}
+
+{% block body %}
+{% block navlinks %}
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="{{ return_url }}" class="nav-link">{{ _gettext('List') }}</a>
+    </li>
+    <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link active">{{ _gettext('Create') }}</a>
+    </li>
+</ul>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    var phoneInput = document.getElementById('phone');
+    var emailInput = document.getElementById('email');
+    phoneInput.addEventListener('change', function () {
+        validatePhone();
+    });
+
+    emailInput.addEventListener('change', function () {
+        validateEmail();
+    });
+
+    function validatePhone() {
+        var phoneValue = phoneInput.value;
+        var phoneRegex = '^0\d{9}$'
+
+        if (!phoneRegex.test(phoneValue)) {
+            alert('Số điện thoại không hợp lệ! Vui lòng nhập một số điện thoại hợp lệ có 10 chữ số và bắt đầu bằng số 0.');
+        }
+
+    }
+
+    function validateEmail() {
+        var emailValue = emailInput.value;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(emailValue)) {
+            alert('Địa chỉ email không hợp lệ! Vui lòng nhập một địa chỉ email hợp lệ.');
+        }
+    }
+});
+
+
+</script>
+{% endblock %}
+
+{% block create_form %}
+{{ lib.render_form(form, return_url, extra(), form_opts) }}
+{% endblock %}
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+{{ lib.form_js() }}
+{% endblock %}

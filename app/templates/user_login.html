@@ -1,0 +1,42 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="wrapper">
+    <div class="inner">
+        <img src="{{ url_for('static', filename='images/image-1.png') }}" alt="" class="image-1">
+        <form id="loginForm" action="user_login" method="POST">
+            <h3>Welcome</h3>
+            <div class="avatar">
+                <img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
+            </div>
+            <div class="form-holder">
+                <select class="w-100 p-1 text-center" name="set_of_permission">
+                    {% for s in set_of_permission %}
+
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-holder">
+                <span class="user-icon"><i class="fas fa-user"></i></span>
+                <input name="username" type="text" class="form-control" placeholder="Username">
+            </div>
+
+
+            <div class="form-holder">
+                <span class="password-icon"><i class="fa-solid fa-lock"></i></span>
+                <input name="password" type="password" class="form-control" placeholder="Password">
+            </div>
+            {% if error_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+            {% endif %}
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+        <img src="{{ url_for('static', filename='images/image-2.png') }}" alt="" class="image-2">
+    </div>
+</div>
+{% endblock %}

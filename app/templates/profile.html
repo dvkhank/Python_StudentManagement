@@ -1,0 +1,37 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card mt-5">
+        <div class="card-header">
+          User Profile
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="fullName">Họ và tên:</label>
+            <input type="text" class="form-control" id="fullName" value="{{user.last_name}} {{user.first_name}}" disabled>
+          </div>
+          <div class="form-group">
+            <label for="age">Tuổi:</label>
+            <input type="text" class="form-control" id="age" value="30" disabled>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" value="john@example.com" disabled>
+          </div>
+          <div class="form-group">
+            <label for="phone">Số điện thoại:</label>
+            <input type="text" class="form-control" id="phone" value="123-456-7890" disabled>
+          </div>
+            <div class="form-group">
+            <label for="phone">Hoc vị</label>
+            <input type="text" class="form-control" id="degree" value="{{user.degree}}" disabled>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

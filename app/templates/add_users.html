@@ -1,0 +1,253 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="container" style="padding-top: 120px;">
+    <div class="row">
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="list-group nav-tabs">
+                    <h1 class="text-center text-white bg-dark">MENU</h1>
+                    <li class="list-group-item"><a class="nav-link active" id="tab1" data-bs-toggle="tab"
+                                                   href="#content1">Add teacher</a></li>
+                    <li class="list-group-item"><a class="nav-link" id="tab2" data-bs-toggle="tab" href="#content2">Add
+                        student</a></li>
+                    <li class="list-group-item"><a class="nav-link" id="tab3" data-bs-toggle="tab" href="#content3">Add
+                        Staff</a></li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <div class="tab-content mt-2">
+                    <div class="tab-pane fade show active" id="content1">
+                        <h4>Add Teacher</h4>
+
+                        <h1 class="text-center mb-4">
+                            <i class="fa-regular fa-address-card mr-2"></i>Create teacher profile
+                        </h1>
+                        <form class="row" method="POST">
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i class="fa-solid fa-signature mr-2"></i>User
+                                    name</label>
+                                <input required type="text" name="name_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-address-card mr-2"></i>CMND</label>
+                                <input required type="text" name="identity_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-12 form-holder">
+                                <label class="form-label h6"><i class="fa-solid fa-house-crack mr-2"></i>Home
+                                    town</label>
+                                <input required type="text" name="hometown_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-envelope mr-2"></i>Email</label>
+                                <input required type="text" name="email_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-envelope mr-2"></i>Phone</label>
+                                <input required type="text" name="phone_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="birthday"><i class="fa-solid fa-cake-candles"></i> Birthday:</label>
+                                <input required style="width: 100%;" type="date" id="birthday"
+                                       name="birthday_student">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label h6"><i class="fa-solid fa-children mr-2"></i>
+                                    Gender</label>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="gender_student" value="0"
+                                           checked>
+                                    <label class="form-check-label">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" value="1" name="gender_student">
+                                    <label class="form-check-label">Female</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 ml-4 ">
+                                <label class="form-label h6">Student attribute block</label>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class" checked>
+                                    <label class="form-check-label">Class 10</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class">
+                                    <label class="form-check-label">Class 11</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class">
+                                    <label class="form-check-label">Class 12</label>
+                                </div>
+                            </div>
+                            <input type="text" class="form-check-input" name="permission" value="teacher">
+                            <div class="col-md-5 m-auto">
+                                <button type="submit text-center">
+                                    Submit
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="content2">
+                        <h1 class="text-center mb-4">
+                            <i class="fa-regular fa-address-card mr-2"></i>Create student profile
+                        </h1>
+                        <form class="row" method="POST">
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i class="fa-solid fa-signature mr-2"></i>User
+                                    name</label>
+                                <input required type="text" name="name_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-address-card mr-2"></i>CMND</label>
+                                <input required type="text" name="identity_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-12 form-holder">
+                                <label class="form-label h6"><i class="fa-solid fa-house-crack mr-2"></i>Home
+                                    town</label>
+                                <input required type="text" name="hometown_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-envelope mr-2"></i>Email</label>
+                                <input required type="text" name="email_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-envelope mr-2"></i>Phone</label>
+                                <input required type="text" name="phone_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="birthday"><i class="fa-solid fa-cake-candles"></i> Birthday:</label>
+                                <input required style="width: 100%;" type="date" id=""
+                                       name="birthday_student">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label h6"><i class="fa-solid fa-children mr-2"></i>
+                                    Gender</label>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="gender_student" value="0"
+                                           checked>
+                                    <label class="form-check-label">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" value="1" name="gender_student">
+                                    <label class="form-check-label">Female</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 ml-4 ">
+                                <label class="form-label h6">Student attribute block</label>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class" checked>
+                                    <label class="form-check-label">Class 10</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class">
+                                    <label class="form-check-label">Class 11</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class">
+                                    <label class="form-check-label">Class 12</label>
+                                </div>
+                            </div>
+                            <input type="text" class="form-check-input" name="permission" value="student">
+                            <div class="col-md-5 m-auto">
+                                <button type="submit text-center">
+                                    Submit
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="content3">
+                        <h1 class="text-center mb-4">
+                            <i class="fa-regular fa-address-card mr-2"></i>Create staff profile
+                        </h1>
+                        <form class="row" method="POST">
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i class="fa-solid fa-signature mr-2"></i>User
+                                    name</label>
+                                <input required type="text" name="name_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-address-card mr-2"></i>CMND</label>
+                                <input required type="text" name="identity_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-12 form-holder">
+                                <label class="form-label h6"><i class="fa-solid fa-house-crack mr-2"></i>Home
+                                    town</label>
+                                <input required type="text" name="hometown_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-envelope mr-2"></i>Email</label>
+                                <input required type="text" name="email_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-6 form-holder">
+                                <label class="form-label h6"><i
+                                        class="fa-regular fa-envelope mr-2"></i>Phone</label>
+                                <input required type="text" name="phone_student" class="form-control p-0">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="birthday"><i class="fa-solid fa-cake-candles"></i> Birthday:</label>
+                                <input required style="width: 100%;" type="date" id=""
+                                       name="birthday_student">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label h6"><i class="fa-solid fa-children mr-2"></i>
+                                    Gender</label>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="gender_student" value="0"
+                                           checked>
+                                    <label class="form-check-label">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" value="1" name="gender_student">
+                                    <label class="form-check-label">Female</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 ml-4 ">
+                                <label class="form-label h6">Student attribute block</label>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class" checked>
+                                    <label class="form-check-label">Class 10</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class">
+                                    <label class="form-check-label">Class 11</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="option_class">
+                                    <label class="form-check-label">Class 12</label>
+                                </div>
+                            </div>
+                            <input type="text" class="form-check-input" name="permission" value="staff">
+                            <div class="col-md-5 m-auto">
+                                <button type="submit text-center">
+                                    Submit
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+
+{% endblock %}

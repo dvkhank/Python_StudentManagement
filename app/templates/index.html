@@ -1,0 +1,235 @@
+{% extends "layout/base.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<!-- Banner Start -->
+<section>
+    <div class="container-bg container-home-page">
+        <div class="content">
+            <h1 class="title  wow fadeInUp" data-wow-delay="0.1s">Welcome to KTS school</h1>
+        </div>
+    </div>
+</section>
+<!-- Banner End -->
+
+<!-- Slider Start -->
+<section>
+    <div class="image-slider">
+        <div class="image-item">
+            <div class="image">
+                <img src="https://imgs.vietnamnet.vn/Images/vnn/2013/12/16/10/20131216100618-a3.jpg" alt="img1"/>
+            </div>
+        </div>
+        <div class="image-item">
+            <div class="image">
+                <img src="https://quantripgd.vinhphuc.edu.vn/UploadImages/pgdyenlac/2021_5/%E1%BA%A2nh%201dc.jpg"
+                     alt="img2"/>
+            </div>
+        </div>
+        <div class="image-item">
+            <div class="image">
+                <img src="https://images2.thanhnien.vn/zoom/686_429/528068263637045248/2023/7/14/truong-nguyenx-thuong-hien-168933233582346441759-40-0-640-960-crop-1689336456943119913931.jpg"
+                     alt="img3"/>
+            </div>
+        </div>
+        <div class="image-item">
+            <div class="image">
+                <img src="https://tuyensinh.tvu.edu.vn/uploads/news/2020_05/truong-hoc-yen-bai-san-sang-huy-dong-tre-den-truong-15.jpg"
+                     alt="img4"/>
+            </div>
+        </div>
+        <div class="image-item">
+            <div class="image">
+                <img src="https://o.rada.vn/data/image/2020/06/25/cam-nghi-cua-em-khi-sap-phai-xa-mai-truong-tieu-hoc.jpg"
+                     alt="img5"/>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Slider End -->
+
+<!-- Service Start -->
+<section class="container-xxl py-5 mt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-graduation-cap text-primary mb-4"></i>
+                        <h5 class="mb-3">Graduate</h5>
+                        <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-globe text-primary mb-4"></i>
+                        <h5 class="mb-3">Classes</h5>
+                        <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-home text-primary mb-4"></i>
+                        <h5 class="mb-3">Home Projects</h5>
+                        <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-book-open text-primary mb-4"></i>
+                        <h5 class="mb-3">Book Library</h5>
+                        <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Service End -->
+
+<!-- Team Start -->
+<section class="container-xxl py-5 mt-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">OUR TEACHERS</h6>
+            <h1 class="mb-5">Meet Our Teachers</h1>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="team-item bg-light">
+                    <div class="overflow-hidden">
+                        <img class="img-fluid" src="{{ url_for('static', filename='images/teacher-1.jpg') }}" alt="">
+                    </div>
+                    <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
+                        <div class="bg-light d-flex justify-content-center pt-2 px-1">
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4">
+                        <h5 class="mb-0">Van Khanh</h5>
+                        <small>Language Teacher</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="team-item bg-light">
+                    <div class="overflow-hidden">
+                        <img class="img-fluid" src="{{ url_for('static', filename='images/teacher-2.jpg') }}" alt="">
+                    </div>
+                    <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
+                        <div class="bg-light d-flex justify-content-center pt-2 px-1">
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4">
+                        <h5 class="mb-0">Ngoc Son</h5>
+                        <small>Math Teacher</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="team-item bg-light">
+                    <div class="overflow-hidden">
+                        <img class="img-fluid" src="{{ url_for('static', filename='images/teacher-3.jpg') }}" alt="">
+                    </div>
+                    <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
+                        <div class="bg-light d-flex justify-content-center pt-2 px-1">
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4">
+                        <h5 class="mb-0">Trung Thang</h5>
+                        <small>Literature Teacher</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="team-item bg-light">
+                    <div class="overflow-hidden">
+                        <img class="img-fluid" src="{{ url_for('static', filename='images/teacher-4.jpg') }}" alt="">
+                    </div>
+                    <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
+                        <div class="bg-light d-flex justify-content-center pt-2 px-1">
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href=""><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4">
+                        <h5 class="mb-0">Ngoc Nhu</h5>
+                        <small>Art Teacher</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Team End -->
+
+<!-- Testimonial Start -->
+<section class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="text-center">
+            <h6 class="section-title bg-white text-center text-primary px-3">Testimonial</h6>
+            <h1 class="mb-5">Our Students Say!</h1>
+        </div>
+        <div class="owl-carousel testimonial position-relative">
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="{{ url_for('static', filename='images/avatar.png') }}" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Ngoc Son</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos.
+                        Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="{{ url_for('static', filename='images/avatar-2.png') }}" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Trung Thang</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos.
+                        Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="{{ url_for('static', filename='images/avatar-3.png') }}" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Van Khanh</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos.
+                        Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="{{ url_for('static', filename='images/avatar-4.png') }}" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Phuc Thien</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos.
+                        Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Testimonial End -->
+
+{% endblock %}
