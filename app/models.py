@@ -32,6 +32,8 @@ class User(Base1, UserMixin):
     phone = Column(String(10), nullable=False, unique=True)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
+    address = Column(String(100), nullable=False)
+    gender = Column(Boolean)
     avatar = Column(String(100),
                     default='https://cdn.tgdd.vn/Files/2016/05/04/824270/tim-hieu-cac-cong-nghe-man-hinh-dien-thoai-5.jpg')
     # phones = relationship(Phone, backref='user', lazy=True)
@@ -180,7 +182,7 @@ if __name__ == '__main__':
         per3 = Permission(name='Create a class', link='create_class')
         per4 = Permission(name='Create a student', link='create_student')
         per5 = Permission(name='Check results', link='check_results')
-        per6 = Permission(name = 'Pay fee', link = 'pay_fee')
+        per6 = Permission(name='Pay fee', link='pay_fee')
         db.session.add_all([per1, per2, per3, per4, per5, per6])
         # db.session.commit()
         setper1 = SetOfPermission(name='Teacher')
@@ -203,23 +205,24 @@ if __name__ == '__main__':
         db.session.commit()
 
         t1 = Teacher(last_name='Duong', first_name='Huu Thanh', date_of_birth='2000/12/06', email='thanhdt@gmail.com',
-                     phone='013525432', username='thanh', password='thanh', degree='Master',
+                     phone='013525432', username='thanh', password='thanh', address='TPHCM', gender=1, degree='Master',
                      setofpermission=1)
         db.session.add(t1)
 
         a1 = Admin(last_name='Duong', first_name='Van Khanh', date_of_birth='2003/12/06', email='khanhdv@gmail.com',
-                   phone='0123456789', username='khanh', password='khanh', setofpermission=4)
+                   phone='0123456789', username='khanh', password='khanh', address='Ha Noi', gender=1, setofpermission=4)
         db.session.add(a1)
         a2 = Admin(last_name='Duong', first_name='Van Khang', date_of_birth='2003/11/06', email='khangdv@gmail.com',
-                   phone='0123456777', username='khang', password='khang', setofpermission=4)
+                   phone='0123456777', username='khang', password='khang', address='Da Nang', gender=1, setofpermission=4)
         db.session.add(a2)
 
         s1 = Student(last_name='Dang', first_name='Trung Thang', date_of_birth='2003/12/07', email='thangdt@gmail.com',
-                     phone='0123456788', username='thang', password='thang', setofpermission=2)
+                     phone='0123456788', username='thang', password='thang', address='Khanh Hoa', gender=1,
+                     setofpermission=2)
         db.session.add(s1)
 
         st1 = Staff(last_name='Cao', first_name='Ngoc Son', date_of_birth='2000/12/05', email='soncn@gmail.com',
-                    phone='0123456787', username='son', password='son', setofpermission=3)
+                    phone='0123456787', username='son', password='son', address='Long An', gender=1, setofpermission=3)
         db.session.add(st1)
 
         db.session.add(a2)
