@@ -1,0 +1,42 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="container" style="padding-top: 120px">
+    <form action="/create_student" class="row" method="get">
+
+        <select class="p-1 text-center" name="set_of_permission">
+            {% for y in years %}
+            <option value="{{ y.id }}">{{ y.year }}</option>
+            {% endfor %}
+        </select>
+        <select class="p-1 text-center" name="set_of_permission">
+            {% for se in semesters %}
+            <option value="{{ se.id }}">{{ se.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Adress</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for s in students %}
+        <tr>
+            <th scope="row">{{ s.id }}</th>
+            <td>{{ s.last_name }}</td>
+            <td>{{ s.first_name }}</td>
+            <td>{{ s.date_of_birth }}</td>
+            <td>{{ s.address }}</td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
