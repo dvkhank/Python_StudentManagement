@@ -112,12 +112,12 @@ def create_class():
     semester_list = dao.load_semester()
     return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
 
-@app.route("/create_class/<int:year_id>", methods=['post', 'get'])
-def create_class():
-    students_list = dao.load_student()
-    year_list = dao.load_year()
-    semester_list = dao.load_semester()
-    return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
+# @app.route("/create_class/<int:year_id>", methods=['post', 'get'])
+# def create_class():
+#     students_list = dao.load_student()
+#     year_list = dao.load_year()
+#     semester_list = dao.load_semester()
+#     return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
 
 
 # @app.context_processor
