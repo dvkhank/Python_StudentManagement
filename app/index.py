@@ -80,6 +80,11 @@ def profile_user():
 
 @app.route("/pay_fee")
 def pay_fee():
+    dao.load_permission()
+    if request.method == 'POST':
+        year = request.form.get()
+
+
     return render_template('pay_fee.html')
 
 @login.user_loader

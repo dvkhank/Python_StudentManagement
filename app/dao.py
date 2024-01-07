@@ -1,5 +1,5 @@
 from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermission, Permission, Admin, \
-    Staff
+    Staff, Semester, Year
 from app import app, db
 import hashlib
 
@@ -13,6 +13,7 @@ def get_user_by_id(user_id, set_of_permission_id):
         return Staff.query.get(user_id)
     if set_of_permission_id == 4:
         return Admin.query.get(user_id)
+
 
 
 def load_permission(set_of_permission_id):
