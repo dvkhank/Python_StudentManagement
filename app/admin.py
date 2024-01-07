@@ -9,7 +9,6 @@ admin = Admin(app=app, name="STUDENT MANAGEMENT", template_mode='bootstrap4')
 
 
 class CustomUserView(ModelView):
-    create_template = 'admin/models/create.html'
     column_editable_list = ['phone', 'email']
     column_list = ['last_name', 'first_name', 'date_of_birth', 'email', 'phone',
                    'active', 'gender']
