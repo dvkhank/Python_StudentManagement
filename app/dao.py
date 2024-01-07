@@ -69,4 +69,4 @@ def load_year():
 
 def load_semester():
     with app.app_context():
-        return Semester.query.all()
+        return db.session.query(Semester, Year).filter(Semester.id == Year.id).all()
