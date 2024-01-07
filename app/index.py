@@ -80,7 +80,12 @@ def profile_user():
 
 @app.route("/pay_fee")
 def pay_fee():
-    return render_template('pay_fee.html')
+    semester = dao.load_semester()
+    if request.method == 'POST':
+        year = request.form.get()
+
+
+    return render_template('pay_fee.html', semester=semester)
 
 @login.user_loader
 def load_user(user_id):
