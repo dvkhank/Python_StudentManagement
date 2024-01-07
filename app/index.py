@@ -94,6 +94,37 @@ def load_user(user_id):
     return user
 
 
+@app.route("/create_student", methods=['post', 'get'])
+def create_student():
+    students_list = dao.load_student()
+    if request.method.__eq__('POST'):
+        last_name = request.form.get("last_name")
+        first_name = request.form.get("first_name")
+        date_of_birth = request.form.get("date_of_birth")
+        hometown = request.form.get("hometown")
+        email = request.form.get("email")
+        phone = request.form.get('phone')
+        username = request.form.get('username')
+        password = request.form.get("password")
+        gender = request.form.get("gender_student")
+        dao.add_student(last_name=last_name, first_name=first_name, date_of_birth= date_of_birth, email=email, phone= phone, username = username, password= password, address= hometown, gender= int(gender))
+    return render_template('create_student.html',students = students_list )
+
+@app.route("/create_class", methods=['post', 'get'])
+def create_class():
+    students_list = dao.load_student()
+    year_list = dao.load_year()
+    semester_list = dao.load_semester()
+    return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
+
+@app.route("/create_class/<int:year_id>", methods=['post', 'get'])
+def create_class():
+    students_list = dao.load_student()
+    year_list = dao.load_year()
+    semester_list = dao.load_semester()
+    return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
+
+
 # @app.context_processor
 # def common_response():
 #     permission_id = None
