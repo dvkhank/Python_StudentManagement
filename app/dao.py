@@ -67,6 +67,6 @@ def load_year():
     with app.app_context():
         return Year.query.all()
 
-def load_semester():
+def load_semester(year_id):
     with app.app_context():
-        return db.session.query(Semester, Year).filter(Semester.id == Year.id).all()
+        return db.session.query(Semgitester, Year).filter(Semester.id == Year.id, Year.id == year_id).all()
