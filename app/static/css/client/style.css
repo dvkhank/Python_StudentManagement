@@ -61,6 +61,42 @@ h3 {
   background-size: cover;
 }
 
+/* button-all */
+.button {
+  background: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);;
+  border-radius: 12px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 2.5;
+  padding: 0 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .2s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+  width: 100%;
+  border: none;
+  outline: none;
+}
+
+.button-edit {
+     background: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+}
+
+.button-delete {
+    background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+}
+
+.button-add2 {
+     background: linear-gradient(0deg, rgba(20,167,62,1) 0%, rgba(102,247,113,1) 100%);
+     width: 120px;
+}
+
 
 
 

@@ -78,6 +78,9 @@ def profile_user():
         user = dao.get_user_by_id(current_user.id, set_of_permission_id)
     return render_template('profile.html', user=user)
 
+@app.route("/pay_fee")
+def pay_fee():
+    return render_template('pay_fee.html')
 
 @login.user_loader
 def load_user(user_id):

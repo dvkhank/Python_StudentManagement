@@ -1,0 +1,45 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row mt-5 pt-5">
+        <div class="tab-pane fade show col-xl-7">
+            <h1 class="text-center mb-4">
+                <i class="fa-regular fa-address-card mr-2"></i>Information Student
+            </h1>
+            <form class="row" method="POST">
+                <div class="col-md-6 form-holder">
+                    <label class="form-label h6">
+                        <i class="fa-solid fa-signature mr-2"></i>
+                        Semester
+                    </label>
+                    <select class="w-100 p-1 text-center">
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                    </select>
+                </div>
+                <div class="col-md-6 form-holder">
+                    <label class="form-label h6"><i
+                            class="fa-regular fa-address-card mr-2"></i>Year</label>
+                    <select class="w-100 p-1 text-center">
+                        <option value="1">2021-2022</option>
+                        <option value="2">2022-2023</option>
+                    </select>
+                </div>
+                <div class="col-md-5 m-auto">
+                    <button type="submit text-center">
+                        Check
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xl-5 mt-5 pt-5" style="font-size: 18px;">
+            <h4>Payment methods</h4>
+            <input type="radio" id="cash" name="" value="Cash">
+            <label for="cash">Cash</label><br>
+            <input type="radio" id="transfer" name="" value="Transfer">
+            <label for="transfer">Transfer</label><br>
+         <button class="button button-delete" role="button">Payment with Momo</button>
+        </div>
+    </div>
+</div>
+{%  endblock  %}
