@@ -53,16 +53,23 @@ class Student(User):
 class Class(Base2):
     __tablename__ = 'class'
 
-    size = Column(Integer, nullable=False)
     grade_id = Column(Integer, ForeignKey('grade.id'), nullable=False)
     student_class = relationship('Student_Class', backref='class', lazy=True)
-    subject_teacher_class = relationship('Subject_Teacher_Class', backref='class', lazy=False)
+    subject_teacher_class = relationship('Subject_Teacher_Class', backref='class', lazy=True)
     homeroom_teacher_id = Column(Integer, ForeignKey('teacher.id'), unique=True, nullable=False)
+    size = Column(Integer, nullable=False)
+
+
+class Rule(Base2):
+    __tablename__ = 'rule'
+    min = Column(Integer, nullable=False)
+    max = Column(Integer, nullable=False)
+
+    description = Column(String(50))
 
 
 class Grade(Base2):
     __tablename__ = 'grade'
-
     classes = relationship(Class, backref='grade', lazy=True)
 
 
@@ -207,23 +214,90 @@ if __name__ == '__main__':
         t1 = Teacher(last_name='Duong', first_name='Huu Thanh', date_of_birth='2000/12/06', email='thanhdt@gmail.com',
                      phone='013525432', username='thanh', password='thanh', address='TPHCM', gender=1, degree='Master',
                      setofpermission=1)
-        db.session.add(t1)
+        t2 = Teacher(last_name='Ho', first_name='Huong Thien', date_of_birth='1990/12/06', email='thienhhmail.com',
+                     phone='012525432', username='thien', password='thien', address='TPHCM', gender=1, degree='Master',
+                     setofpermission=1)
+        t3 = Teacher(last_name='Nguyen Thi', first_name='Phuong Trang', date_of_birth='1990/12/07',
+                     email='trangntpmail.com',
+                     phone='012528432', username='trang', password='trang', address='Nha Trang', gender=0,
+                     degree='Master',
+                     setofpermission=1)
+        db.session.add_all([t1, t2, t3])
 
         a1 = Admin(last_name='Duong', first_name='Van Khanh', date_of_birth='2003/12/06', email='khanhdv@gmail.com',
-                   phone='0123456789', username='khanh', password='khanh', address='Ha Noi', gender=1, setofpermission=4)
+                   phone='0123456789', username='khanh', password='khanh', address='Ha Noi', gender=1,
+                   setofpermission=4)
         db.session.add(a1)
         a2 = Admin(last_name='Duong', first_name='Van Khang', date_of_birth='2003/11/06', email='khangdv@gmail.com',
-                   phone='0123456777', username='khang', password='khang', address='Da Nang', gender=1, setofpermission=4)
+                   phone='0123456777', username='khang', password='khang', address='Da Nang', gender=1,
+                   setofpermission=4)
         db.session.add(a2)
 
         s1 = Student(last_name='Dang', first_name='Trung Thang', date_of_birth='2003/12/07', email='thangdt@gmail.com',
                      phone='0123456788', username='thang', password='thang', address='Khanh Hoa', gender=1,
                      setofpermission=2)
         db.session.add(s1)
+        s2 = Student(last_name='Dang', first_name='Trung Tien', date_of_birth='2003/12/08', email='tiendt@gmail.com',
+                     phone='0123436788', username='tien', password='tien', address='Khanh Hoa', gender=1,
+                     setofpermission=2)
+        db.session.add(s2)
 
         st1 = Staff(last_name='Cao', first_name='Ngoc Son', date_of_birth='2000/12/05', email='soncn@gmail.com',
                     phone='0123456787', username='son', password='son', address='Long An', gender=1, setofpermission=3)
         db.session.add(st1)
 
-        db.session.add(a2)
+        r1 = Rule(name="CLass", min=1, max=40)
+        r2 = Rule(name="Age", min=15, max=20)
+        r3 = Rule(name="Grade", min=1, max=20)
+        db.session.add_all([r1, r2, r3])
+
+        g1 = Grade(name='10')
+        g2 = Grade(name='11')
+        g3 = Grade(name='12')
+        db.session.add_all([g1, g2, g3])
+
+        y1 = Year(year=2023)
+        y2 = Year(year=2024)
+        db.session.add_all([y1, y2])
+
+        semes1 = Semester(name='HK1', year_id=1)
+        semes2 = Semester(name='HK2', year_id=1)
+        db.session.add_all([semes1, semes2])
+
+        typeofscore1 = TypeOfScore(name='15 phut', factor=1)
+        typeofscore2 = TypeOfScore(name='1 tiet', factor=2)
+        typeofscore3 = TypeOfScore(name='Cuoi ky', factor=3)
+        db.session.add_all([typeofscore1, typeofscore2, typeofscore3])
+
+        c1 = Class(name='A1', grade_id=1, homeroom_teacher_id=1, size=30)
+        db.session.add(c1)
+
+        s_c1 = Student_Class(student_id=1, class_id=1, semester_id=1)
+        s_c2 = Student_Class(student_id=2, class_id=1, semester_id=1)
+        db.session.add_all([s_c1, s_c2])
+
+        subject1 = Subject(name='Toan', head_teacher=1)
+        subject2 = Subject(name='Ly', head_teacher=2)
+        subject3 = Subject(name='Hoa', head_teacher=3)
+        db.session.add_all([subject1, subject2, subject3])
+
+        subject_teacher1 = Subject_Teacher(subject_id=1, teacher_id=1)
+        subject_teacher2 = Subject_Teacher(subject_id=2, teacher_id=2)
+        subject_teacher3 = Subject_Teacher(subject_id=3, teacher_id=3)
+        db.session.add_all([subject_teacher1, subject_teacher2, subject_teacher3])
+
+        subject_teacher_class1 = Subject_Teacher_Class(subject_teacher_id=1, class_id=1)
+        subject_teacher_class2 = Subject_Teacher_Class(subject_teacher_id=2, class_id=1)
+        subject_teacher_class3 = Subject_Teacher_Class(subject_teacher_id=3, class_id=1)
+        db.session.add_all([subject_teacher_class1, subject_teacher_class2, subject_teacher_class3])
+
+        score1 = Score(student_class_id=1, subject_teacher_class_id=1, typeofscore_id=1, score=9.5)
+        score2 = Score(student_class_id=1, subject_teacher_class_id=1, typeofscore_id=2, score=9.5)
+        score3 = Score(student_class_id=1, subject_teacher_class_id=1, typeofscore_id=3, score=9.5)
+
+        score4 = Score(student_class_id=2, subject_teacher_class_id=1, typeofscore_id=1, score=9.5)
+        score5 = Score(student_class_id=2, subject_teacher_class_id=1, typeofscore_id=2, score=9.5)
+        score6 = Score(student_class_id=2, subject_teacher_class_id=1, typeofscore_id=3, score=9.5)
+        db.session.add_all([score1, score2, score3, score4, score5, score6])
+
         db.session.commit()
