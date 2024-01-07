@@ -102,19 +102,15 @@ def create_student():
         dao.add_student(last_name=last_name, first_name=first_name, date_of_birth= date_of_birth, email=email, phone= phone, username = username, password= password, address= hometown, gender= int(gender))
     return render_template('create_student.html',students = students_list )
 
-@app.route("/create_class", methods=['post', 'get'])
-def create_class():
-    students_list = dao.load_student()
-    year_list = dao.load_year()
-    semester_list = dao.load_semester()
-    return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
-
 @app.route("/create_class/<int:year_id>", methods=['post', 'get'])
 def create_class():
     students_list = dao.load_student()
     year_list = dao.load_year()
-    semester_list = dao.load_semester()
+    year_id = request.get.form('year')
+    if year_list:
+        semester_list = dao.load_semester(year_id)
     return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
+
 
 
 # @app.context_processor

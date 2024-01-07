@@ -1,14 +1,14 @@
 {% extends 'layout/base.html' %}
 {% block content %}
 <div class="container" style="padding-top: 120px">
-    <form action="/create_student" class="row" method="get">
+    <form action="/create_student" class="row" method="get" autocomplete="off">
 
-        <select class="p-1 text-center" name="set_of_permission">
+        <select class="p-1 text-center" name="year">
             {% for y in years %}
             <option value="{{ y.id }}">{{ y.year }}</option>
             {% endfor %}
         </select>
-        <select class="p-1 text-center" name="set_of_permission">
+        <select class="p-1 text-center" name="semesters">
             {% for se in semesters %}
             <option value="{{ se.id }}">{{ se.name }}</option>
             {% endfor %}
