@@ -1,5 +1,5 @@
 from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermission, Permission, Admin, \
-    Staff
+    Staff, Year,Semester
 from app import app, db
 import hashlib
 
@@ -49,3 +49,24 @@ def auth_admin(username, password):
     with app.app_context():
         return Admin.query.filter(Admin.username.__eq__(username),
                                   Admin.password.__eq__(password)).first()
+
+def add_student(last_name, first_name, date_of_birth, email, phone, username, password, address, gender):
+    with app.app_context():
+        student = Student(last_name=last_name, first_name=first_name, date_of_birth=date_of_birth, email=email,
+                     phone=phone, username=username, password=password, address=address, gender=gender,
+                     setofpermission=2)
+        db.session.add(student)
+        db.session.commit()
+
+
+def load_student():
+    with app.app_context():
+        return Student.query.all()
+
+def load_year():
+    with app.app_context():
+        return Year.query.all()
+
+def load_semester():
+    with app.app_context():
+        return db.session.query(Semester, Year).filter(Semester.id == Year.id).all()
