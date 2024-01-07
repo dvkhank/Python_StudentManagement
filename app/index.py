@@ -80,12 +80,12 @@ def profile_user():
 
 @app.route("/pay_fee")
 def pay_fee():
-    dao.load_permission()
+    semester = dao.load_semester()
     if request.method == 'POST':
         year = request.form.get()
 
 
-    return render_template('pay_fee.html')
+    return render_template('pay_fee.html', semester=semester)
 
 @login.user_loader
 def load_user(user_id):
@@ -117,12 +117,12 @@ def create_class():
     semester_list = dao.load_semester()
     return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
 
-@app.route("/create_class/<int:year_id>", methods=['post', 'get'])
-def create_class():
-    students_list = dao.load_student()
-    year_list = dao.load_year()
-    semester_list = dao.load_semester()
-    return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
+# @app.route("/create_class/<int:year_id>", methods=['post', 'get'])
+# def create_class():
+#     students_list = dao.load_student()
+#     year_list = dao.load_year()
+#     semester_list = dao.load_semester()
+#     return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
 
 
 # @app.context_processor
