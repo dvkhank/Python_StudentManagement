@@ -1,6 +1,7 @@
 from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermission, Permission, Admin, \
     Staff, Year,Semester
 from app import app, db
+from sqlalchemy import func
 import hashlib
 
 
@@ -70,3 +71,18 @@ def load_year():
 def load_semester():
     with app.app_context():
         return db.session.query(Semester, Year).filter(Semester.id == Year.id).all()
+
+def count_student():
+    return Student.query.count()
+
+def count_teacher():
+    return Teacher.query.count()
+
+def count_class():
+    return Subject.query.count()
+
+
+if __name__ == '__main__':
+    with app.app_context():
+        print(count_student())
+        print(count_teacher())

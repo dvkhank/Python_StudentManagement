@@ -50,8 +50,10 @@
 </head>
 <body>
 {% include "admin/navigation.html" %}
+
 {% block page_body %}
-    <nav class="pcoded-navbar">
+    <div class="row">
+    <nav class="pcoded-navbar ">
         <div class="navbar-wrapper">
             <div class="navbar-brand header-logo">
                 {% block brand %}
@@ -69,7 +71,7 @@
             {% endblock %}
         </div>
     </nav>
-    <div class="container pt-5 mt-5">
+    <div class="container mt-5 col-md-7">
         {% block messages %}
         {{ layout.messages() }}
         {% endblock %}
@@ -78,6 +80,7 @@
 
         {% block body %}{% endblock %}
     </div>
+        </div>
 {% endblock %}
 {% block tail_js %}
 <script src="{{ admin_static.url(filename='vendor/jquery.min.js', v='3.5.1') }}" type="text/javascript"></script>
