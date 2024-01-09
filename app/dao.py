@@ -68,6 +68,10 @@ def load_year():
     with app.app_context():
         return Year.query.all()
 
+def load_semesters():
+    with app.app_context():
+        return Semester.query.all()
+
 def load_semester():
     with app.app_context():
         return db.session.query(Semester, Year).filter(Semester.id == Year.id).all()
@@ -77,9 +81,6 @@ def count_student():
 
 def count_teacher():
     return Teacher.query.count()
-
-def count_class():
-    return Subject.query.count()
 
 
 if __name__ == '__main__':

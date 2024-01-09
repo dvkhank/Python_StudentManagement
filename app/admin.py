@@ -14,6 +14,8 @@ class MyAdmin(AdminIndexView):
     def index(self):
         students = dao.count_student()
         teachers = dao.count_teacher()
+        year_list = dao.load_year()
+        semester_list = dao.load_semester()
         return self.render('admin/index.html', students=students, teachers=teachers)
 
 admin = Admin(app=app, name="STUDENT MANAGEMENT", template_mode='bootstrap4', index_view=MyAdmin())
@@ -113,7 +115,9 @@ class LogoutView(BaseView):
 class MyStatsView(BaseView):
     @expose('/')
     def __index__(self):
-        return self.render('admin/stats.html')
+        semester_list = dao.load_semesters()
+        year_list = dao.load_year()
+        return self.render('admin/stats.html', semesters=semester_list, years=year_list)
 
 
 admin.add_view(CustomUserView(Student, db.session, name="Manage Students"))
