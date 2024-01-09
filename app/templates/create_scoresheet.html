@@ -1,0 +1,28 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+ <title>Nhập điểm học sinh</title>
+    <style>
+        /* Thêm một số CSS tùy chỉnh nếu cần */
+        body {
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Nhập điểm học sinh</h1>
+        <form action="/submit-scores" method="post">
+            <div class="mb-3">
+                <label for="studentName" class="form-label">Tên học sinh:</label>
+                <input type="text" class="form-control" id="studentName" name="studentName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="score" class="form-label">Điểm số:</label>
+                <input type="number" class="form-control" id="score" name="score" min="0" max="10" step="0.1" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{%  endblock  %}
