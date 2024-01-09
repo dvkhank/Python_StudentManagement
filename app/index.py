@@ -38,6 +38,34 @@ def user_login():
     return render_template("user_login.html", set_of_permission=set_of_permission, error_message=error_message)
 
 
+@app.route('/create_scoresheet', methods=['get'])
+def create_scoresheet():
+    teacher_id = current_user.id
+    classes = dao.load_class(teacher_id)
+    class_id = request.args.get('class')
+    students = dao.load_student_by_class_id(class_id, teacher_id)
+    subject = dao.load_teacher_subject(teacher_id)
+    type_of_score = dao.load_type_of_score()
+    # if request.method.__eq__('POST'):
+    #     teacher_id = current_user.id
+    #     score_type = request.form.get('score_type')  # Lấy loại điểm từ form
+    #     scores = request.form.to_dict()  # Lấy tất cả dữ liệu từ form
+    #
+    #     for key, value in scores.items():
+    #         if key.startswith('score_'):
+    #             student_id = key.split('_')[1]  # Lấy ID của học sinh từ tên trường
+    #             # Tạo hoặc cập nhật điểm số cho học sinh với loại điểm tương ứng
+    #             score = Score.query.filter_by(student_id=student_id, type=score_type).first()
+    #             if score:
+    #                 score.score_value = float(value)  # Cập nhật điểm số nếu đã tồn tại
+    #             else:
+    #                 new_score = Score(student_id=student_id, type=score_type, score_value=float(value))
+    #                 db.session.add(new_score)  # Tạo điểm số mới nếu chưa tồn tại trong cơ sở dữ liệu
+
+    return render_template('create_scoresheet.html', classes=classes, students=students, subject=subject,
+                           type_of_score=type_of_score)
+
+
 @app.route('/admin/login', methods=['post'])
 def admin_login():
     username = request.form.get('username')
@@ -78,14 +106,15 @@ def profile_user():
         user = dao.get_user_by_id(current_user.id, set_of_permission_id)
     return render_template('profile.html', user=user)
 
+
 @app.route("/pay_fee")
 def pay_fee():
     semester = dao.load_semester()
     if request.method == 'POST':
         year = request.form.get()
 
-
     return render_template('pay_fee.html', semester=semester)
+
 
 @login.user_loader
 def load_user(user_id):
@@ -107,15 +136,18 @@ def create_student():
         username = request.form.get('username')
         password = request.form.get("password")
         gender = request.form.get("gender_student")
-        dao.add_student(last_name=last_name, first_name=first_name, date_of_birth= date_of_birth, email=email, phone= phone, username = username, password= password, address= hometown, gender= int(gender))
-    return render_template('create_student.html',students = students_list )
+        dao.add_student(last_name=last_name, first_name=first_name, date_of_birth=date_of_birth, email=email,
+                        phone=phone, username=username, password=password, address=hometown, gender=int(gender))
+    return render_template('create_student.html', students=students_list)
+
 
 @app.route("/create_class", methods=['post', 'get'])
 def create_class():
     students_list = dao.load_student()
     year_list = dao.load_year()
     semester_list = dao.load_semester()
-    return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
+    return render_template('create_class.html', students=students_list, years=year_list, semesters=semester_list)
+
 
 # @app.route("/create_class/<int:year_id>", methods=['post', 'get'])
 # def create_class():

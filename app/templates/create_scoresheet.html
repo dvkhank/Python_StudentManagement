@@ -1,28 +1,77 @@
 {% extends 'layout/base.html' %}
 {% block content %}
- <title>Nhập điểm học sinh</title>
-    <style>
+<title>Nhập điểm học sinh</title>
+<style>
         /* Thêm một số CSS tùy chỉnh nếu cần */
         body {
             padding: 50px;
         }
-    </style>
+
+
+
+
+
+
+
+
+
+
+
+</style>
 </head>
-<body>
-    <div class="container">
-        <h1 class="mb-4">Nhập điểm học sinh</h1>
-        <form action="/submit-scores" method="post">
-            <div class="mb-3">
-                <label for="studentName" class="form-label">Tên học sinh:</label>
-                <input type="text" class="form-control" id="studentName" name="studentName" required>
-            </div>
+<!-- index.html -->
+<div class="container">
+    <h1 class="mb-4">Nhập điểm học sinh</h1>
+    <form action="create_scoresheet" method="get">
+        <div class="mb-3">
+            <label for="class" class="form-label">Chọn lớp:</label>
+            <select class="form-select" id="class" name="class" required>
+                {% for c in classes %}
+                <option value="{{ c.Class.id }}">{{ c.Grade.name }}{{ c.Class.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Check</button>
+    </form>
 
-            <div class="mb-3">
-                <label for="score" class="form-label">Điểm số:</label>
-                <input type="number" class="form-control" id="score" name="score" min="0" max="10" step="0.1" required>
-            </div>
+    <div id="studentList">
+        {% for s in subject %}
+        <h1 class="text-center text-danger">{{ s.name }}</h1>
 
+        {% endfor %}
+        <form action="create_scoresheet" method="post">
+            <label for="score_type">Chọn loại điểm:</label>
+            <select id="score_type" name="score_type" class="form-control">
+                {% for t in type_of_score %}
+                <option value="{{t.id}}">{{t.name}}</option>
+                {% endfor %}
+            </select>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Tên học sinh</th>
+                    <th scope="col">Điểm số</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ s.Student.last_name }} {{ s.Student.first_name }}</td>
+                    <td>
+                        <input type="number" class="form-control" name="{{s.Student_Class.id}}" min="0" max="10" step="0.1"
+                               required>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+
+
+        </form>
     </div>
-{%  endblock  %}
+</div>
+
+    {% endblock %}
