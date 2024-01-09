@@ -38,6 +38,52 @@ def user_login():
     return render_template("user_login.html", set_of_permission=set_of_permission, error_message=error_message)
 
 
+@app.route('/create_scoresheet', methods=['get', 'post'])
+def create_scoresheet():
+    student_id_add = 0
+    if request.args.get("student_id_add"):
+        student_id_add = request.args.get("student_id_add")
+
+
+    students_list = {}
+    semester_list = dao.load_semester()
+    classes_list = dao.load_classes()
+    class_id = request.args.get("classes")
+    semester_id = request.args.get("semester")
+    teacher_in_class = dao.load_teacher_in_class(teacher_id=current_user.id, class_id=class_id)
+    rule_15p = dao.load_rule(4)
+    if class_id and semester_id and teacher_in_class:
+        session["class_id"] = class_id
+        session["semester"] = semester_id
+        students_list = dao.load_student_by_class(class_id=int(class_id),
+                                                  semester_id=int(semester_id))
+    return render_template('create_scoresheet.html', semester=semester_list, classes=classes_list,
+                           student_list=students_list, rule_15p=rule_15p, student_id_add=student_id_add)
+
+
+@app.route('/create_scoresheet/add', methods=['get', 'post'])
+def create_scoresheet_add():
+    stu_id = request.args.get("student_id_add")
+    class_id = session["class_id"]
+    semester_id = session["semester"]
+
+    rule_15p = dao.load_rule(4)
+    if stu_id:
+        student = dao.get_user_by_id(stu_id, 2)
+
+    if request.method.__eq__('POST'):
+        score15p = request.form.getlist("score15p")
+        student_id = request.form.get("student_id")
+        for s in score15p:
+            dao.add_Score(
+                student_class_id=dao.load_class(student_id=int(student_id), class_id=class_id, semester_id=semester_id)[
+                    0],
+                subject_teacher_class_id=dao.load_teacher_in_class(teacher_id=current_user.id, class_id=int(class_id))[
+                    0],
+                typeofscore_id=1, score=float(s))
+    return render_template("add_create_scoresheet.html", student=student, rule_15p=rule_15p)
+
+
 @app.route('/admin/login', methods=['post'])
 def admin_login():
     username = request.form.get('username')
@@ -146,7 +192,7 @@ def add_student_class():
         students_add_list = dao.load_student_not_class(semester_id)
 
     return render_template("/add_student_class.html", class_name=class_name, semester_name=semester_name,
-                           rules=rule_class, students=students_list, students_add = students_add_list)
+                           rules=rule_class, students=students_list, students_add=students_add_list)
 
 
 # @app.context_processor

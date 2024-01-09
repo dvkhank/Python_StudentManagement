@@ -210,7 +210,8 @@ if __name__ == '__main__':
         setper_per6 = Permission_SetOfPermission(permission_id=6, set_of_permission_id=2)
 
         db.session.add_all(
-            [setper_per1, setper_per2, setper_per3, setper_per4, setper_per5, setper_per6])
+            [setper_per1, setper_per2, setper_per3, setper_per4, setper_per5, setper_per6,
+             ])
         db.session.commit()
 
         t1 = Teacher(last_name='Duong', first_name='Huu Thanh', date_of_birth='2000/12/06', email='thanhdt@gmail.com',

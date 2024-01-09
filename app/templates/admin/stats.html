@@ -1,0 +1,94 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+
+<div class="col-md-12 mb-5">
+    <div class="card">
+        <div class="card-header bg-primary p-3">
+            <h2 class="card-title text-white">Select statistics</h2>
+        </div>
+        <div class="card-body">
+            <div class="stats-choice">
+                <form class="d-flex flex-wrap" style="justify-content: space-around;">
+                    <div class="form-group">
+                        <label class="form-label h4">
+                            Semester
+                        </label>
+                        <select class="w-100 p-1 text-center rounded">
+                            {% for se in semesters %}
+                            <option value="{{ se.id }}">{{ se.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label h4 ">
+                            Year
+                        </label>
+                        <select class="w-100 p-1 text-center rounded">
+                            {% for y in years %}
+                            <option value="{{ y.id }}">{{ y.year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label h4">
+                            Chart type:
+                        </label>
+                        <select class="w-100 p-1 text-center rounded">
+                            <option value="">Pie chart</option>
+                            <option value="">Column chart</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-7">
+        <div class="card" style="transition: unset;">
+            <div class="card-header">
+                <div class="row" style="justify-content: space-between;">
+                    <h2 class="card-title text-black">Statistical chart</h2>
+                    <div class="card-tools">
+                        <a href="javascript:;" class="btn btn-info btn-border btn-round btn-sm mr-2" id="pdfChart">
+                        <span class="btn-label">
+                            <i class="fa fa-pencil"></i>
+                        </span>
+                            Save PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="col-md-8" style="margin: auto;">
+                    <canvas id="myChart" width="100px" height="100px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header p-3">
+                <h2 class="card-title text-black">Data sheet</h2>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Id</th>
+                    <th>Student Name</th>
+                    <th>Year</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+</script>
+{% endblock %}
