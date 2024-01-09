@@ -1,19 +1,40 @@
 {% extends 'layout/base.html' %}
 {% block content %}
 <div class="container" style="padding-top: 120px">
-    <form action="/create_student" class="row" method="get">
+    <form class="row" style="padding: 10px" method="get" action="create_scoresheet">
+        <div class="col-md-4 form-holder">
+            <label class="form-label h6">
+                <i class="fa-solid fa-signature mr-2"></i>
+                Classes
+            </label>
+            <select class="w-100 p-1 text-center" name="classes">
+                {% for c in classes %}
+                <option value="{{c.Class.id}}">{{ c.Grade.name }}{{ c.Class.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 form-holder">
+            <label class="form-label h6">
+                <i class="fa-solid fa-signature mr-2"></i>
+                Semester
+            </label>
+            <select class="w-100 p-1 text-center" name="semester">
+                {% for s in semester %}
+                <option value="{{s.Semester.id}}">{{ s.Semester.name }} - {{ s.Year.year }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <select class="p-1 text-center" name="set_of_permission">
-            {% for y in years %}
-            <option value="{{ y.id }}">{{ y.year }}</option>
-            {% endfor %}
-        </select>
-        <select class="p-1 text-center" name="set_of_permission">
-            {% for se in semesters %}
-            <option value="{{ se.id }}">{{ se.name }}</option>
-            {% endfor %}
-        </select>
+        <div class="col-md-2 ">
+            <button style="margin-top: 15px;" type="submit text-center">
+                Find
+            </button>
+        </div>
     </form>
+   <a href="/create_class/add"> <button style="margin-top: 15px; width:80px" type="submit text-center">
+        Add
+    </button></a>
+    <p class="size">Size: <span id="rowCount"></span>/ {{ rules.max }}</p>
     <table class="table">
         <thead>
         <tr>
@@ -39,4 +60,23 @@
     </table>
 </div>
 
+<script>
+    // Wait for the DOM content to be loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the table element
+        var table = document.querySelector('.table');
+
+        // Get the span element
+        var rowCountSpan = document.getElementById('rowCount');
+
+        // Initial count
+        updateRowCount();
+
+        // Function to update row count
+        function updateRowCount() {
+            var rowCount = table.querySelectorAll('tbody tr').length;
+            rowCountSpan.textContent = rowCount;
+        }
+    });
+</script>
 {% endblock %}

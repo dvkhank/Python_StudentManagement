@@ -1,77 +1,73 @@
 {% extends 'layout/base.html' %}
 {% block content %}
-<title>Nhập điểm học sinh</title>
-<style>
-        /* Thêm một số CSS tùy chỉnh nếu cần */
-        body {
-            padding: 50px;
-        }
-
-
-
-
-
-
-
-
-
-
-
-</style>
-</head>
-<!-- index.html -->
 <div class="container">
     <h1 class="mb-4">Nhập điểm học sinh</h1>
-    <form action="create_scoresheet" method="get">
-        <div class="mb-3">
-            <label for="class" class="form-label">Chọn lớp:</label>
-            <select class="form-select" id="class" name="class" required>
+    <form class="row" style="padding: 10px" method="get" action="create_scoresheet">
+        <div class="col-md-4 form-holder">
+            <label class="form-label h6">
+                <i class="fa-solid fa-signature mr-2"></i>
+                Classes
+            </label>
+            <select class="w-100 p-1 text-center" name="classes">
                 {% for c in classes %}
-                <option value="{{ c.Class.id }}">{{ c.Grade.name }}{{ c.Class.name }}</option>
+                <option value="{{c.Class.id}}">{{ c.Grade.name }}{{ c.Class.name }}</option>
                 {% endfor %}
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Check</button>
-    </form>
-
-    <div id="studentList">
-        {% for s in subject %}
-        <h1 class="text-center text-danger">{{ s.name }}</h1>
-
-        {% endfor %}
-        <form action="create_scoresheet" method="post">
-            <label for="score_type">Chọn loại điểm:</label>
-            <select id="score_type" name="score_type" class="form-control">
-                {% for t in type_of_score %}
-                <option value="{{t.id}}">{{t.name}}</option>
+        <div class="col-md-4 form-holder">
+            <label class="form-label h6">
+                <i class="fa-solid fa-signature mr-2"></i>
+                Semester
+            </label>
+            <select class="w-100 p-1 text-center" name="semester">
+                {% for s in semester %}
+                <option value="{{s.Semester.id}}">{{ s.Semester.name }} - {{ s.Year.year }}</option>
                 {% endfor %}
             </select>
+        </div>
 
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Tên học sinh</th>
-                    <th scope="col">Điểm số</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for s in students %}
-                <tr>
-                    <td>{{ s.Student.last_name }} {{ s.Student.first_name }}</td>
-                    <td>
-                        <input type="number" class="form-control" name="{{s.Student_Class.id}}" min="0" max="10" step="0.1"
-                               required>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <div class="col-md-2 ">
+            <button style="margin-top: 15px;" type="submit text-center">
+                Find
+            </button>
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Adress</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for s in student_list %}
+        <tr>
 
+            <th scope="row">{{ s.id }}</th>
+            <td>{{ s.last_name }}</td>
+            <td>{{ s.first_name }}</td>
+            <td>{{ s.date_of_birth }}</td>
+            <td>{{ s.address }}</td>
+            <td>
+                <form style="padding: 0; box-shadow: none"  action="/create_scoresheet/add?student_id_add={{ s.id}}">
+                        <input type="hidden" name="student_id_add" value="{{s.id}}">
+                    <button style="margin:0" type="submit" class="btn btn-primary" >
+                    Add Score
+                </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
 
-        </form>
-    </div>
+        </tbody>
+    </table>
 </div>
 
-    {% endblock %}
+
+<script>
+
+</script>
+{% endblock %}

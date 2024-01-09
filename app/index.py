@@ -38,32 +38,50 @@ def user_login():
     return render_template("user_login.html", set_of_permission=set_of_permission, error_message=error_message)
 
 
-@app.route('/create_scoresheet', methods=['get'])
+@app.route('/create_scoresheet', methods=['get', 'post'])
 def create_scoresheet():
-    teacher_id = current_user.id
-    classes = dao.load_class(teacher_id)
-    class_id = request.args.get('class')
-    students = dao.load_student_by_class_id(class_id, teacher_id)
-    subject = dao.load_teacher_subject(teacher_id)
-    type_of_score = dao.load_type_of_score()
-    # if request.method.__eq__('POST'):
-    #     teacher_id = current_user.id
-    #     score_type = request.form.get('score_type')  # Lấy loại điểm từ form
-    #     scores = request.form.to_dict()  # Lấy tất cả dữ liệu từ form
-    #
-    #     for key, value in scores.items():
-    #         if key.startswith('score_'):
-    #             student_id = key.split('_')[1]  # Lấy ID của học sinh từ tên trường
-    #             # Tạo hoặc cập nhật điểm số cho học sinh với loại điểm tương ứng
-    #             score = Score.query.filter_by(student_id=student_id, type=score_type).first()
-    #             if score:
-    #                 score.score_value = float(value)  # Cập nhật điểm số nếu đã tồn tại
-    #             else:
-    #                 new_score = Score(student_id=student_id, type=score_type, score_value=float(value))
-    #                 db.session.add(new_score)  # Tạo điểm số mới nếu chưa tồn tại trong cơ sở dữ liệu
+    student_id_add = 0
+    if request.args.get("student_id_add"):
+        student_id_add = request.args.get("student_id_add")
 
-    return render_template('create_scoresheet.html', classes=classes, students=students, subject=subject,
-                           type_of_score=type_of_score)
+
+    students_list = {}
+    semester_list = dao.load_semester()
+    classes_list = dao.load_classes()
+    class_id = request.args.get("classes")
+    semester_id = request.args.get("semester")
+    teacher_in_class = dao.load_teacher_in_class(teacher_id=current_user.id, class_id=class_id)
+    rule_15p = dao.load_rule(4)
+    if class_id and semester_id and teacher_in_class:
+        session["class_id"] = class_id
+        session["semester"] = semester_id
+        students_list = dao.load_student_by_class(class_id=int(class_id),
+                                                  semester_id=int(semester_id))
+    return render_template('create_scoresheet.html', semester=semester_list, classes=classes_list,
+                           student_list=students_list, rule_15p=rule_15p, student_id_add=student_id_add)
+
+
+@app.route('/create_scoresheet/add', methods=['get', 'post'])
+def create_scoresheet_add():
+    stu_id = request.args.get("student_id_add")
+    class_id = session["class_id"]
+    semester_id = session["semester"]
+
+    rule_15p = dao.load_rule(4)
+    if stu_id:
+        student = dao.get_user_by_id(stu_id, 2)
+
+    if request.method.__eq__('POST'):
+        score15p = request.form.getlist("score15p")
+        student_id = request.form.get("student_id")
+        for s in score15p:
+            dao.add_Score(
+                student_class_id=dao.load_class(student_id=int(student_id), class_id=class_id, semester_id=semester_id)[
+                    0],
+                subject_teacher_class_id=dao.load_teacher_in_class(teacher_id=current_user.id, class_id=int(class_id))[
+                    0],
+                typeofscore_id=1, score=float(s))
+    return render_template("add_create_scoresheet.html", student=student, rule_15p=rule_15p)
 
 
 @app.route('/admin/login', methods=['post'])
@@ -143,18 +161,38 @@ def create_student():
 
 @app.route("/create_class", methods=['post', 'get'])
 def create_class():
-    students_list = dao.load_student()
-    year_list = dao.load_year()
     semester_list = dao.load_semester()
-    return render_template('create_class.html', students=students_list, years=year_list, semesters=semester_list)
+    classes_list = dao.load_classes()
+    rule_class = dao.load_rule(1)
+    class_id = request.args.get("classes")
+    semester_id = request.args.get("semester")
+    if class_id and semester_id:
+        students_list = dao.load_student_by_class(class_id=int(class_id), semester_id=int(semester_id))
+        session["class_id"] = class_id
+        session["semester_id"] = semester_id
+    else:
+        students_list = dao.load_student_by_class(class_id=1, semester_id=1)
+    return render_template('/create_class.html'
+                           , students=students_list, semester=semester_list
+                           , classes=classes_list, rules=rule_class, class_id=class_id, semester_id=semester_id)
 
 
-# @app.route("/create_class/<int:year_id>", methods=['post', 'get'])
-# def create_class():
-#     students_list = dao.load_student()
-#     year_list = dao.load_year()
-#     semester_list = dao.load_semester()
-#     return render_template('create_class.html', students = students_list, years = year_list, semesters = semester_list )
+@app.route("/create_class/add", methods=['post', 'get'])
+def add_student_class():
+    class_id = session["class_id"]
+    semester_id = session["semester_id"]
+    rule_class = dao.load_rule(1)
+    class_name = dao.get_class_by_id(class_id)
+    semester_name = dao.get_semester_by_id(semester_id)
+    stu_add = request.args.get("stu_add")
+    if stu_add:
+        dao.add_Student_Class(stu_add, class_id, semester_id)
+    if class_id and semester_id:
+        students_list = dao.load_student_by_class(class_id=int(class_id), semester_id=int(semester_id))
+        students_add_list = dao.load_student_not_class(semester_id)
+
+    return render_template("/add_student_class.html", class_name=class_name, semester_name=semester_name,
+                           rules=rule_class, students=students_list, students_add=students_add_list)
 
 
 # @app.context_processor

@@ -59,6 +59,8 @@ class Class(Base2):
     homeroom_teacher_id = Column(Integer, ForeignKey('teacher.id'), unique=True, nullable=False)
     size = Column(Integer, nullable=False)
 
+    def __str__(self):
+        return self.name
 
 class Rule(Base2):
     __tablename__ = 'rule'
