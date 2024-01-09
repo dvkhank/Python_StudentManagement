@@ -1,6 +1,7 @@
 {% extends 'layout/base.html' %}
 {% block content %}
-<div class="container" style="padding-top: 120px">
+<div class="container">
+    <h1 class="mb-4">Nhập điểm học sinh</h1>
     <form class="row" style="padding: 10px" method="get" action="create_scoresheet">
         <div class="col-md-4 form-holder">
             <label class="form-label h6">
@@ -31,10 +32,6 @@
             </button>
         </div>
     </form>
-   <a href="/create_class/add"> <button style="margin-top: 15px; width:80px" type="submit text-center">
-        Add
-    </button></a>
-    <p class="size">Size: <span id="rowCount"></span>/ {{ rules.max }}</p>
     <table class="table">
         <thead>
         <tr>
@@ -46,13 +43,22 @@
         </tr>
         </thead>
         <tbody>
-        {% for s in students %}
+        {% for s in student_list %}
         <tr>
+
             <th scope="row">{{ s.id }}</th>
             <td>{{ s.last_name }}</td>
             <td>{{ s.first_name }}</td>
             <td>{{ s.date_of_birth }}</td>
             <td>{{ s.address }}</td>
+            <td>
+                <form style="padding: 0; box-shadow: none"  action="/create_scoresheet/add?student_id_add={{ s.id}}">
+                        <input type="hidden" name="student_id_add" value="{{s.id}}">
+                    <button style="margin:0" type="submit" class="btn btn-primary" >
+                    Add Score
+                </button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
 
@@ -60,23 +66,8 @@
     </table>
 </div>
 
+
 <script>
-    // Wait for the DOM content to be loaded
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get the table element
-        var table = document.querySelector('.table');
 
-        // Get the span element
-        var rowCountSpan = document.getElementById('rowCount');
-
-        // Initial count
-        updateRowCount();
-
-        // Function to update row count
-        function updateRowCount() {
-            var rowCount = table.querySelectorAll('tbody tr').length;
-            rowCountSpan.textContent = rowCount;
-        }
-    });
 </script>
 {% endblock %}
