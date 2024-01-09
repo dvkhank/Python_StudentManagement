@@ -1,0 +1,115 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="container" style="padding-top: 120px">
+    <p>Create class {{class_name[0]}}{{class_name[1]}} in {{semester_name}}</p>
+    <div class="row">
+        <div class="col-md-8">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Date of Birth</th>
+                    <th scope="col">Adress</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for s in students_add %}
+                <tr>
+
+                    <th scope="row">{{ s.id }}</th>
+                    <td>{{ s.last_name }}</td>
+                    <td>{{ s.first_name }}</td>
+                    <td>{{ s.date_of_birth }}</td>
+                    <td>{{ s.address }}</td>
+                    <td>
+                        <form style="padding: 0; box-shadow: none" onsubmit="hadleSubmit">
+                            <button style="margin: 5px;" type="submit" class="text-center" >
+                                Add
+                            </button>
+                            <input type="hidden" name="stu_add" value="{{s.id}}">
+                        </form>
+
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-md-4">
+            <p class="size">Size: <span id="rowCount"></span>/ {{ rules.max }}</p>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Date of Birth</th>
+                    <th scope="col">Adress</th>
+                </tr>
+                </thead>
+                <tbody id="student_list">
+                {% for s in students %}
+                <tr>
+                    <th scope="row">{{ s.id }}</th>
+                    <td>{{ s.last_name }}</td>
+                    <td>{{ s.first_name }}</td>
+                    <td>{{ s.date_of_birth }}</td>
+                    <td>{{ s.address }}</td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Wait for the DOM content to be loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        btnSubmit = document.querySelectorAll("button")
+
+        function rowCountExceedsMax() {
+            var rowCount = document.querySelectorAll('#student_list tr').length;
+
+            return rowCount >= maxCount;
+        }
+
+
+
+        var rowCountSpan = document.getElementById('rowCount');
+
+        // Initial count
+        updateRowCount();
+
+
+
+        // Function to update row count
+        function updateRowCount() {
+            var rowCount = document.querySelectorAll('#student_list tr').length;
+            var maxCount = {{ rules.max }}
+            rowCountSpan.textContent = rowCount;
+            if(rowCount >= maxCount) {
+                alert("Max size in class")
+                for (var i = 0; i< btnSubmit.length; i++){
+                    btnSubmit[i].disabled = true
+                }
+            }else {
+                for (var i = 0; i< btnSubmit.length; i++){
+                    btnSubmit[i].disabled = false
+                }
+            }
+
+        }
+
+
+    });
+
+</script>
+{% endblock %}
