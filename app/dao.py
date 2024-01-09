@@ -117,7 +117,6 @@ def load_student_by_class(class_id, semester_id):
         ).all()
 
 
-
 def load_year():
     with app.app_context():
         return Year.query.all()
@@ -171,7 +170,6 @@ def load_class (student_id, class_id, semester_id):
                                                          Student_Class.student_id == student_id,
                                                          Student_Class.semester_id == semester_id).first()
 
-
 def load_teacher_in_class(teacher_id, class_id):
     return db.session.query(Subject_Teacher_Class.id). \
         filter(Subject_Teacher.id == Subject_Teacher_Class.id,
@@ -182,6 +180,18 @@ def add_Score(student_class_id, subject_teacher_class_id, typeofscore_id, score)
     score1 = Score(student_class_id=student_class_id, subject_teacher_class_id=subject_teacher_class_id, typeofscore_id=typeofscore_id, score=score)
     db.session.add(score1)
     db.session.commit()
+
+
+def load_semesters():
+    with app.app_context():
+        return Semester.query.all()
+
+def count_student():
+        return Student.query.count()
+
+def count_teacher():
+        return Teacher.query.count()
+
 
 if __name__ == '__main__':
     with app.app_context():
