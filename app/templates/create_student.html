@@ -161,10 +161,10 @@
             if (dobInput.value.trim() === '') {
                 dobInput.setCustomValidity('Please enter your date of birth.');
             } else if (
-                inputDate.getFullYear() < currentDate.getFullYear() - 20 ||
-                inputDate.getFullYear() > currentDate.getFullYear() - 15
+                inputDate.getFullYear() < currentDate.getFullYear() - {{rule_age.max}} ||
+                inputDate.getFullYear() > currentDate.getFullYear() - {{ rule_age.min }}
             ) {
-                dobInput.setCustomValidity('Please enter a valid date of birth (age between 15 and 20).');
+                dobInput.setCustomValidity('Please enter a valid date of birth (age between {{ rule_age.min }} and {{rule_age.max}}).');
             } else {
                 dobInput.setCustomValidity('');
             }

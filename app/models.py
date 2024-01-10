@@ -252,7 +252,10 @@ if __name__ == '__main__':
         r1 = Rule(name="CLass", min=1, max=40)
         r2 = Rule(name="Age", min=15, max=20)
         r3 = Rule(name="Grade", min=1, max=20)
-        db.session.add_all([r1, r2, r3])
+        r4 = Rule(name="15p", min=1, max = 5)
+        r5 = Rule(name="1Tiet", min=1, max = 3)
+        r6 = Rule(name="CuoiKi", min=1, max = 1)
+        db.session.add_all([r1, r2, r3, r4, r5])
 
         g1 = Grade(name='10')
         g2 = Grade(name='11')
