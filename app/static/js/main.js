@@ -64,29 +64,18 @@ $(document).ready(function () {
     });
   });
 
- function exportToScoreExcel() {
-        // Get table element
-        const data = document.getElementById("data-table-score");
-
-        // Create a new workbook
-        const wb = XLSX.utils.book_new();
-
-        // Convert table data to worksheet
-        const ws = XLSX.utils.table_to_sheet(table);
-
-        // Add the worksheet to the workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-        // Save workbook to file
-        XLSX.writeFile(wb, "score_sheet.xlsx");
-      }
-
-     function exportToScorePDF() {
-            const data = document.getElementById('data-table-score');
+function exportToScorePDF() {
+          const data = document.getElementById('data-table-score');
 
             html2pdf(data)
                 .from(data)
                 .save('score_sheet.pdf');
+
+             swal({
+                  title: "Export Success!",
+                  text: "You clicked the button!",
+                  icon: "success"
+                });
         }
 
 

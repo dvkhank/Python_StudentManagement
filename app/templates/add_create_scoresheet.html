@@ -7,20 +7,11 @@
                 <a href="javascript:;" class="btn btn-info btn-border btn-round btn-sm mr-2 text-white"
                    style="background: #138496 !important;
                      border-color: #117a8b;"
-                   onclick="exportToScoreExcel()">
-                        <span class="btn-label">
-                             <i class="fa fa-pencil"></i>
-                        </span>
-                    Export Score to Excel
-                </a>
-             <a href="javascript:;" class="btn btn-danger btn-border btn-round btn-sm mr-2 text-white"
-                 style="background: #c82333 !important;
-                     border-color: #bd2130;"
                    onclick="exportToScorePDF()">
                         <span class="btn-label">
                              <i class="fa fa-pencil"></i>
                         </span>
-                    Export Score to PDF
+                    Export Score
                 </a>
             </div>
             <div id="data-table-score">
@@ -51,20 +42,20 @@
                     <tr>
                         <th scope="col">15p</th>
                         {% for i in range (rule_15p.min) %}
-                        <th><input class="score15p" type="number" min="0" max="10" step="0.1" name="score15p"></th>
+                        <th><input class="score15p rounded" type="number" min="0" max="10" step="0.1" name="score15p"></th>
                         {% endfor %}
-                        <th><i style="cursor: pointer" class="fa-solid fa-circle-plus"
+                        <th><i style="cursor: pointer; color:#01f702" class="fa-solid fa-circle-plus"
                                onclick="createScore(this, 1)"></i></th>
                     </tr>
                     <tr>
                         <th scope="col">1Tiet</th>
-                        <th><input class="score1tiet" type="number" min="0" max="10" step="0.1" name="score1tiet"></th>
-                        <th><i style="cursor: pointer" class="fa-solid fa-circle-plus"
+                        <th><input class="score1tiet rounded" type="number" min="0" max="10" step="0.1" name="score1tiet"></th>
+                        <th><i style="cursor: pointer; color:#01f702"class="fa-solid fa-circle-plus"
                                onclick="createScore(this, 2)"></i></th>
                     </tr>
                     <tr>
                         <th scope="col">CuoiKi</th>
-                        <th><input type="number" min="0" max="10" step="0.1" name="scorecuoiki"></th>
+                        <th><input class="rounded" type="number" min="0" max="10" step="0.1" name="scorecuoiki"></th>
                     </tr>
                     </tbody>
                 </table>
@@ -83,10 +74,14 @@
             let score15p = document.querySelectorAll("input.score15p").length
             if (score15p < {{rule_15p.max}})
             {
-                let h = `<td><input class="score15p" type="number" min="0" max="10" step="0.1" name="score15p"></td>`
+                let h = `<th><input class="score15p rounded" type="number" min="0" max="10" step="0.1" name="score15p"></th>`
                 e.parentElement.insertAdjacentHTML("beforebegin", h)
             }else{
-                alert("Max collumn is {{rule_15p.max}}")
+                swal({
+                  title: "Sorry !",
+                  text: "Max collumn is {{rule_15p.max}}",
+                  icon: "Info",
+                });
             }
         }
         if (num == 2) {

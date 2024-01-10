@@ -52,11 +52,11 @@
             <td>{{ s.date_of_birth }}</td>
             <td>{{ s.address }}</td>
             <td>
-                <form style="padding: 0; box-shadow: none"  action="/create_scoresheet/add?student_id_add={{ s.id}}">
-                        <input type="hidden" name="student_id_add" value="{{s.id}}">
-                    <button style="margin:0" type="submit" class="btn btn-primary" >
-                    Add Score
-                </button>
+                <form style="padding: 0; box-shadow: none" action="/create_scoresheet/add?student_id_add={{ s.id}}">
+                    <input type="hidden" name="student_id_add" value="{{s.id}}">
+                    <button style="margin:0" type="submit" class="btn btn-primary">
+                        Add Score
+                    </button>
                 </form>
             </td>
         </tr>
@@ -65,9 +65,4 @@
         </tbody>
     </table>
 </div>
-
-
-<script>
-
-</script>
 {% endblock %}
