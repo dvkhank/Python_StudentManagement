@@ -68,11 +68,16 @@ def create_scoresheet_add():
     semester_id = session["semester"]
 
     rule_15p = dao.load_rule(4)
+    rule_1tiet = dao.load_rule(5)
+    rule_cuoiki = dao.load_rule(6)
+
     if stu_id:
         student = dao.get_user_by_id(stu_id, 2)
 
     if request.method.__eq__('POST'):
         score15p = request.form.getlist("score15p")
+        score1tiet = request.form.getlist("score1tiet")
+        scorecuoiki = request.form.get("scorecuoiki")
         student_id = request.form.get("student_id")
         for s in score15p:
             dao.add_Score(
@@ -81,7 +86,20 @@ def create_scoresheet_add():
                 subject_teacher_class_id=dao.load_teacher_in_class(teacher_id=current_user.id, class_id=int(class_id))[
                     0],
                 typeofscore_id=1, score=float(s))
-    return render_template("add_create_scoresheet.html", student=student, rule_15p=rule_15p)
+        for s in score1tiet:
+            dao.add_Score(
+                student_class_id=dao.load_class(student_id=int(student_id), class_id=class_id, semester_id=semester_id)[
+                    0],
+                subject_teacher_class_id=dao.load_teacher_in_class(teacher_id=current_user.id, class_id=int(class_id))[
+                    0],
+                typeofscore_id=2, score=float(s))
+        dao.add_Score(
+            student_class_id=dao.load_class(student_id=int(student_id), class_id=class_id, semester_id=semester_id)[
+                0],
+            subject_teacher_class_id=dao.load_teacher_in_class(teacher_id=current_user.id, class_id=int(class_id))[
+                0],
+            typeofscore_id=3, score=float(scorecuoiki))
+    return render_template("add_create_scoresheet.html",student = student, rule_15p=rule_15p, rule_1tiet= rule_1tiet)
 
 
 @app.route('/admin/login', methods=['post'])
@@ -144,6 +162,7 @@ def load_user(user_id):
 @app.route("/create_student", methods=['post', 'get'])
 def create_student():
     students_list = dao.load_student()
+    rule_age = dao.load_rule(2)
     if request.method.__eq__('POST'):
         last_name = request.form.get("last_name")
         first_name = request.form.get("first_name")
@@ -156,7 +175,7 @@ def create_student():
         gender = request.form.get("gender_student")
         dao.add_student(last_name=last_name, first_name=first_name, date_of_birth=date_of_birth, email=email,
                         phone=phone, username=username, password=password, address=hometown, gender=int(gender))
-    return render_template('create_student.html', students=students_list)
+    return render_template('create_student.html', students=students_list, rule_age= rule_age)
 
 
 @app.route("/create_class", methods=['post', 'get'])
