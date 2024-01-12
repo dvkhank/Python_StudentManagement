@@ -118,7 +118,6 @@ class LogoutView(BaseView):
 class MyStatsView(BaseView):
     @expose('/')
     def __index__(self):
-        student_lists = None
         semester_list = dao.load_semester()
         classes_list = dao.load_classes()
         class_id = request.args.get("classes")
@@ -126,12 +125,15 @@ class MyStatsView(BaseView):
         order = request.args.get("order")
         class_name = None
         semester_name = None
+        student_lists = dao.calc_AVG_studnent_in_class(class_id=int(1), semester_id=int(1),
+                                                           order_select=int(1))
         if class_id and semester_id and order:
+            student_lists = dao.calc_AVG_studnent_in_class(class_id=int(class_id), semester_id=int(semester_id),
+                                                           order_select=int(order))
             class_name = dao.get_class_by_id(class_id)
             semester_name = dao.get_semester_by_id(semester_id)
-            student_lists = dao.calc_AVG_studnent_in_class(class_id=class_id, semester_id=semester_id,
-                                                           order_select=order)
-        return self.render('admin/stats.html',students = student_lists ,classes=classes_list, semester=semester_list,
+
+        return self.render('admin/stats.html',students= student_lists,classes=classes_list , semester=semester_list,
                            class_name=class_name, semester_name=semester_name)
 
 

@@ -199,16 +199,15 @@ def count_student():
 def count_teacher():
     return Teacher.query.count()
 
-
 def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
-    stats=  db.session.query(Student,
+    stats=  (db.session.query(Student,
                             func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).label('AVG'),
                             case(
-                                (func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id) >= 8,
+                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 8,
                                  'VERRY GOOD'),
-                                (func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id) >= 6.5,
+                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 6.5,
                                  'GOOD'),
-                                (func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id) >= 5,
+                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 5,
                                  'PASS'),
                                 else_='FAIL'
                             ).label('Result')
@@ -216,19 +215,20 @@ def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
         Student_Class, Score.student_class_id == Student_Class.id
     ).join(
         Student, Student_Class.student_id == Student.id
+    ).join(
+        TypeOfScore, TypeOfScore.id == Score.typeofscore_id
     ).filter(
         Student_Class.class_id == class_id,
         Student_Class.semester_id == semester_id
     ).group_by(
         Student_Class.id
-    )
-    if order_select == '0' :
+    ))
+    if order_select == 0 :
         return stats.all()
-    if order_select == '1':
-        return stats.order_by(func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).asc()).all()
-    if order_select =='2' :
-        return stats.order_by(func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).desc()).all()
-
+    if order_select == 1:
+        return stats.order_by(func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor).asc()).all()
+    if order_select == 2 :
+        return stats.order_by(func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor).desc()).all()
 
 
 
