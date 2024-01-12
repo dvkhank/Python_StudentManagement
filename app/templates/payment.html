@@ -1,0 +1,37 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Payment Information</h2>
+
+    <form>
+        <!-- Mã hàng -->
+        <div class="mb-3">
+            <label for="productCode" class="form-label">Product Code</label>
+            <input type="text" class="form-control" id="productCode" placeholder="Enter product code" required>
+        </div>
+
+        <!-- Số tiền -->
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount</label>
+            <input type="text" class="form-control" id="amount" placeholder="Enter amount" required>
+        </div>
+
+        <!-- Nội dung -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" placeholder="Enter description"></textarea>
+        </div>
+
+        <!-- Thông tin hóa đơn -->
+        <div class="mb-3">
+            <label for="invoiceInfo" class="form-label">Invoice Information</label>
+            <textarea class="form-control" id="invoiceInfo" placeholder="Enter invoice information"></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Submit Payment</button>
+    </form>
+</div>
+
+{% endblock %}

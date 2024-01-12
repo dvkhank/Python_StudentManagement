@@ -1,6 +1,6 @@
 from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermission, Permission, Admin, \
     Staff, Year, Semester, Class, Grade, Student_Class, Subject_Teacher_Class, Subject_Teacher, Subject, TypeOfScore, \
-    Score, Rule
+    Score, Rule, Fee, Fee_Semester
 from app import app, db
 from sqlalchemy import func, case
 import hashlib
@@ -55,8 +55,9 @@ def load_type_of_score():
     return TypeOfScore.query.all()
 
 
-def add_score(teacher_id, score, typeofscore_id):
-    score = Score()
+#
+# def add_score(teacher_id, score, typeofscore_id):
+#     score = Score()
 
 
 def load_setofpermission():
@@ -121,6 +122,11 @@ def load_student_by_class(class_id, semester_id):
 def load_year():
     with app.app_context():
         return Year.query.all()
+
+
+def load_fee(semester_id):
+    return db.session.query(Fee).filter(Semester.id == semester_id, Fee.id == Fee_Semester.fee_id,
+                                        Semester.id == Fee_Semester.semester_id).all()
 
 
 def load_semester():
@@ -199,6 +205,7 @@ def count_student():
 def count_teacher():
     return Teacher.query.count()
 
+
 def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
     stats=  (db.session.query(Student,
                             func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).label('AVG'),
@@ -234,4 +241,6 @@ def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
 
 if __name__ == '__main__':
     with app.app_context():
+
         print(calc_AVG_studnent_in_class(1, 1, 2))
+
