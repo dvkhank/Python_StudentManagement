@@ -2,6 +2,7 @@ from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermis
     Staff, Year, Semester, Class, Grade, Student_Class, Subject_Teacher_Class, Subject_Teacher, Subject, TypeOfScore, \
     Score, Rule
 from app import app, db
+from sqlalchemy import func, case
 import hashlib
 
 
@@ -164,11 +165,13 @@ def add_Student_Class(student_id, class_id, semester_id):
         db.session.add(s_c)
         db.session.commit()
 
-def load_class (student_id, class_id, semester_id):
+
+def load_class(student_id, class_id, semester_id):
     with app.app_context():
         return db.session.query(Student_Class.id).filter(Student_Class.class_id == class_id,
                                                          Student_Class.student_id == student_id,
                                                          Student_Class.semester_id == semester_id).first()
+
 
 def load_teacher_in_class(teacher_id, class_id):
     return db.session.query(Subject_Teacher_Class.id). \
@@ -176,8 +179,10 @@ def load_teacher_in_class(teacher_id, class_id):
                Subject_Teacher.teacher_id == teacher_id, Subject.id == Subject_Teacher.subject_id,
                Subject_Teacher_Class.class_id == class_id).first()
 
+
 def add_Score(student_class_id, subject_teacher_class_id, typeofscore_id, score):
-    score1 = Score(student_class_id=student_class_id, subject_teacher_class_id=subject_teacher_class_id, typeofscore_id=typeofscore_id, score=score)
+    score1 = Score(student_class_id=student_class_id, subject_teacher_class_id=subject_teacher_class_id,
+                   typeofscore_id=typeofscore_id, score=score)
     db.session.add(score1)
     db.session.commit()
 
@@ -186,13 +191,47 @@ def load_semesters():
     with app.app_context():
         return Semester.query.all()
 
+
 def count_student():
-        return Student.query.count()
+    return Student.query.count()
+
 
 def count_teacher():
-        return Teacher.query.count()
+    return Teacher.query.count()
+
+
+def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
+    stats=  db.session.query(Student,
+                            func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).label('AVG'),
+                            case(
+                                (func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id) >= 8,
+                                 'VERRY GOOD'),
+                                (func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id) >= 6.5,
+                                 'GOOD'),
+                                (func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id) >= 5,
+                                 'PASS'),
+                                else_='FAIL'
+                            ).label('Result')
+                            ).join(
+        Student_Class, Score.student_class_id == Student_Class.id
+    ).join(
+        Student, Student_Class.student_id == Student.id
+    ).filter(
+        Student_Class.class_id == class_id,
+        Student_Class.semester_id == semester_id
+    ).group_by(
+        Student_Class.id
+    )
+    if order_select == '0' :
+        return stats.all()
+    if order_select == '1':
+        return stats.order_by(func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).asc()).all()
+    if order_select =='2' :
+        return stats.order_by(func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).desc()).all()
+
+
 
 
 if __name__ == '__main__':
     with app.app_context():
-        print(load_class(1,1,1)[0])
+        print(calc_AVG_studnent_in_class(1, 1, 2))
