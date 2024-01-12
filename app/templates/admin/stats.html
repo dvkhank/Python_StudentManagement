@@ -1,94 +1,123 @@
 {% extends 'admin/master.html' %}
 {% block body %}
+<div class="container">
+    <form class="row" style="padding: 10px" method="get" action="">
+        <div class="col-md-4 form-holder">
+            <label class="form-label h6">
+                <i class="fa-solid fa-signature mr-2"></i>
+                Classes
+            </label>
+            <select class="w-100 p-1 text-center" name="classes">
+                {% for c in classes %}
+                <option value="{{c.Class.id}}">{{ c.Grade.name }}{{ c.Class.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 form-holder">
+            <label class="form-label h6">
+                <i class="fa-solid fa-signature mr-2"></i>
+                Semester
+            </label>
+            <select class="w-100 p-1 text-center" name="semester">
+                {% for s in semester %}
+                <option value="{{s.Semester.id}}">{{ s.Semester.name }} - {{ s.Year.year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 form-holder">
+            <label class="form-label h6">
+                <i class="fa-solid fa-filter"></i>
+                Filter
+            </label>
+            <select name="order">
+                <option value="0">None</option>
+                <option value="1">ASC</option>
+                <option value="2">DESC</option>
+            </select>
+        </div>
+        <div class="col-md-2 ">
+            <button style="margin-top: 15px;" type="submit text-center">
+                Find
+            </button>
+        </div>
+    </form>
 
-<div class="col-md-12 mb-5">
-    <div class="card">
-        <div class="card-header bg-primary p-3">
-            <h2 class="card-title text-white">Select statistics</h2>
-        </div>
-        <div class="card-body">
-            <div class="stats-choice">
-                <form class="d-flex flex-wrap" style="justify-content: space-around;">
-                    <div class="form-group">
-                        <label class="form-label h4">
-                            Semester
-                        </label>
-                        <select class="w-100 p-1 text-center rounded">
-                            {% for se in semesters %}
-                            <option value="{{ se.id }}">{{ se.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label h4 ">
-                            Year
-                        </label>
-                        <select class="w-100 p-1 text-center rounded">
-                            {% for y in years %}
-                            <option value="{{ y.id }}">{{ y.year }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label h4">
-                            Chart type:
-                        </label>
-                        <select class="w-100 p-1 text-center rounded">
-                            <option value="">Pie chart</option>
-                            <option value="">Column chart</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-7">
-        <div class="card" style="transition: unset;">
-            <div class="card-header">
-                <div class="row" style="justify-content: space-between;">
-                    <h2 class="card-title text-black">Statistical chart</h2>
-                    <div class="card-tools">
-                        <a href="javascript:;" class="btn btn-info btn-border btn-round btn-sm mr-2" id="pdfChart">
-                        <span class="btn-label">
-                            <i class="fa fa-pencil"></i>
-                        </span>
-                            Save PDF
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="col-md-8" style="margin: auto;">
-                    <canvas id="myChart" width="100px" height="100px"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-5">
-        <div class="card">
-            <div class="card-header p-3">
-                <h2 class="card-title text-black">Data sheet</h2>
-            </div>
+    <div class="row">
+        <div class="col-md-8">
+            <p>Class {{class_name[0]}}{{class_name[1]}} in {{semester_name}}</p>
             <table class="table">
+                <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Student Name</th>
-                    <th>Year</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Date of Birth</th>
+                    <th scope="col">AVG Score</th>
+                    <th scope="col">Rate</th>
                 </tr>
+                </thead>
+                <tbody>
+                {% for s in students %}
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <th scope="row">{{ s.Student.id }}</th>
+                    <td>{{ s.Student.last_name }}</td>
+                    <td>{{ s.Student.first_name }}</td>
+                    <td>{{ s.Student.date_of_birth }}</td>
+                    <td>{{ s[1]}}</td>
+                    {% if s[2] == 'VERRY GOOD' %}
+                    <td class="ratevery">{{ s[2] }}</td>
+                    {% elif s[2] == 'GOOD' %}
+                    <td class="rategood">{{ s[2] }}</td>
+                    {% elif s[2] == 'PASS' %}
+                    <td class="ratepass">{{ s[2] }}</td>
+                    {% elif s[2] == 'FAIL' %}
+                    <td class="ratefail">{{ s[2] }}</td>
+                    {% endif %}
                 </tr>
+                {% endfor %}
+                </tbody>
             </table>
         </div>
+        <div class="col-md-4">
+            <canvas id="myChart"></canvas>
+        </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
 
+<script>
+var countVeryGood
+var countGood
+var countPass
+var countFail
+    function countRate() {
+        countVeryGood = document.querySelectorAll('.ratevery').length ;
+        countGood = document.querySelectorAll('.rategood').length ;
+        countPass = document.querySelectorAll('.ratepass').length ;
+        countFail = document.querySelectorAll('.ratefail').length ;
+        console.log(countVeryGood, countGood, countPass, countFail)
+    }
+
+    <!--  end  -->
+    const ctx = document.getElementById('myChart');
+    countRate()
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['VeryGood', 'Good', 'Pass', 'Fail'],
+            datasets: [{
+                label: '# of Votes',
+                data: [countVeryGood, countGood, countPass, countFail],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 </script>
 {% endblock %}
