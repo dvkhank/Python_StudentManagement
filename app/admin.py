@@ -131,8 +131,9 @@ class MyStatsView(BaseView):
             semester_name = dao.get_semester_by_id(semester_id)
             student_lists = dao.calc_AVG_studnent_in_class(class_id=class_id, semester_id=semester_id,
                                                            order_select=order)
-        return self.render('admin/stats.html', classes=classes_list, semester=semester_list,students= student_lists,
+        return self.render('admin/stats.html',students = student_lists ,classes=classes_list, semester=semester_list,
                            class_name=class_name, semester_name=semester_name)
+
 
 
 admin.add_view(CustomUserView(Student, db.session, name="Manage Students"))

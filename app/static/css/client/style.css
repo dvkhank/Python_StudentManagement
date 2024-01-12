@@ -1107,19 +1107,4 @@ label.navbar-btn > i:hover {
     border-right: none;
 }
 
-/*---------------------------------------------
-                 Contact
----------------------------------------------*/
-.bg-primary {
-    background: #1ddec4 !important;
-}
-
-.contact .form-control {
-    border: 1px solid var(--dark);
-    padding: 8px !important;
-}
-
-.contact .form-control:focus {
-    border: 2px solid #80bdff;
-}
 
