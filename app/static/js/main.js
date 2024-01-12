@@ -64,4 +64,21 @@ $(document).ready(function () {
     });
   });
 
+function exportToScorePDF() {
+          const data = document.getElementById('data-table-score');
+
+            html2pdf(data)
+                .from(data)
+                .save('score_sheet.pdf');
+
+             swal({
+                  title: "Export Success!",
+                  text: "You clicked the button!",
+                  icon: "success"
+                });
+        }
+
+
+
+
 

@@ -60,6 +60,19 @@ def create_scoresheet():
                            student_list=students_list, rule_15p=rule_15p, student_id_add=student_id_add)
 
 
+def calculate_average_scores(score15p, score1tiet, scorecuoiki):
+    score15p = [float(score) for score in score15p]
+    score1tiet = [float(score) for score in score1tiet]
+    scorecuoiki = float(scorecuoiki)
+
+    # Tính điểm trung bình cho từng cột
+    average_15p = sum(score15p) / len(score15p) if len(score15p) > 0 else 0
+    average_1tiet = sum(score1tiet) / len(score1tiet) if len(score1tiet) > 0 else 0
+    average_cuoiki = scorecuoiki
+
+    return average_15p, average_1tiet, average_cuoiki
+
+
 @app.route('/create_scoresheet/add', methods=['get', 'post'])
 def create_scoresheet_add():
     stu_id = request.args.get("student_id_add")
@@ -69,6 +82,7 @@ def create_scoresheet_add():
     rule_15p = dao.load_rule(4)
     rule_1tiet = dao.load_rule(5)
     rule_cuoiki = dao.load_rule(6)
+    average_15p, average_1tiet, average_cuoiki = 0, 0, 0
 
     if stu_id:
         student = dao.get_user_by_id(stu_id, 2)
@@ -78,6 +92,7 @@ def create_scoresheet_add():
         score1tiet = request.form.getlist("score1tiet")
         scorecuoiki = request.form.get("scorecuoiki")
         student_id = request.form.get("student_id")
+
         for s in score15p:
             dao.add_Score(
                 student_class_id=dao.load_class(student_id=int(student_id), class_id=class_id, semester_id=semester_id)[
@@ -98,7 +113,10 @@ def create_scoresheet_add():
             subject_teacher_class_id=dao.load_teacher_in_class(teacher_id=current_user.id, class_id=int(class_id))[
                 0],
             typeofscore_id=3, score=float(scorecuoiki))
-    return render_template("add_create_scoresheet.html", student=student, rule_15p=rule_15p, rule_1tiet=rule_1tiet)
+        average_15p, average_1tiet, average_cuoiki = calculate_average_scores(score15p, score1tiet, scorecuoiki)
+    return render_template("add_create_scoresheet.html",
+                           student=student, rule_15p=rule_15p, rule_1tiet=rule_1tiet,
+                           average_15p=average_15p, average_1tiet=average_1tiet, average_cuoiki=average_cuoiki)
 
 
 @app.route('/admin/login', methods=['post'])

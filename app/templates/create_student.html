@@ -45,10 +45,9 @@
                         </div>
                         <div class="col-md-3">
                             <label for="birthday"><i class="fa-solid fa-cake-candles"></i> Birthday:</label>
-                            <input class="form-control" required style="width: 100%;" type="text" id="birthday"
+                            <input class="form-control p-0" required style="width: 100%;" type="text" id="birthday"
                                    name="date_of_birth" placeholder="YYYY-MM-DD"
                                    pattern="\d{4}/\d{2}/\d{2}" title="Please enter a date in the format YYYY-MM-DD">
-
                         </div>
                         <div class="col-md-3">
                             <label class="form-label h6"><i class="fa-solid fa-children mr-2"></i>
@@ -69,11 +68,9 @@
                             <label class="form-label h6">Student account</label>
                             <br>
                             <label><i class="fa-solid fa-user"></i> Username's Account</label>
-                            <input class="form-control" required style="width: 100%;" type="text"
-                                   name="username">
+                            <input class="form-control p-0" required type="text" name="username">
                             <label><i class="fa-solid fa-lock"></i> Password's Account</label>
-                            <input class="form-control" required style="width: 100%;" type="text"
-                                   name="password">
+                            <input class="form-control p-0" required type="text" name="password">
                         </div>
 
                         <div class="col-md-5 m-auto">
@@ -130,6 +127,7 @@
         }
 
         function reloadPage() {
+            swal("Good job!", "You clicked the button!", "success")
             location.reload(true);
         }
 
