@@ -29,7 +29,7 @@
             <!-- Display fee information -->
             {% if fees %}
             <div class="col-md-12 mt-3">
-                <form method="post" action="/process_payment">
+                <form method="post" action="payment" id="paymentForm">
                     <h2 class="text-center mb-4">Fee Information</h2>
                     <table class="table">
                         <thead>
@@ -43,7 +43,7 @@
                         {% for fee in fees %}
                         <tr>
                             <td>
-                                <input type="checkbox" name="selected_fees[]" value="{{ fee.id }}">
+                                <input type="checkbox" name="selected_fees[]" value="{{ fee.id }}" class="fee-checkbox">
                             </td>
                             <td>{{ fee.name }}</td>
                             <td>{{ fee.fee }}</td>
@@ -54,18 +54,14 @@
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-primary">Pay Selected Fees</button>
                     </div>
+
+                    <!-- Thêm phần tử để hiển thị tổng tiền -->
+                  <input type="text" id="totalAmount" name="totalAmount" class="form-control" value="0" readonly>
                 </form>
             </div>
             {% endif %}
         </div>
-        <div class="col-xl-5 mt-5 pt-5" style="font-size: 18px;">
-            <h4>Payment methods</h4>
-            <input type="radio" id="cash" name="" value="Cash">
-            <label for="cash">Cash</label><br>
-            <input type="radio" id="transfer" name="" value="Transfer">
-            <label for="transfer">Transfer</label><br>
-            <button class="button button-delete" role="button">Payment with Momo</button>
-        </div>
+
     </div>
 </div>
 <script src="{{url_for('static', filename='js/fee.js')}}"></script>
