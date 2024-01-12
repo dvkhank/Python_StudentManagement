@@ -2,6 +2,7 @@ from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermis
     Staff, Year, Semester, Class, Grade, Student_Class, Subject_Teacher_Class, Subject_Teacher, Subject, TypeOfScore, \
     Score, Rule, Fee, Fee_Semester
 from app import app, db
+from sqlalchemy import func, case
 import hashlib
 
 
@@ -205,6 +206,41 @@ def count_teacher():
     return Teacher.query.count()
 
 
+def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
+    stats=  (db.session.query(Student,
+                            func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).label('AVG'),
+                            case(
+                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 8,
+                                 'VERRY GOOD'),
+                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 6.5,
+                                 'GOOD'),
+                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 5,
+                                 'PASS'),
+                                else_='FAIL'
+                            ).label('Result')
+                            ).join(
+        Student_Class, Score.student_class_id == Student_Class.id
+    ).join(
+        Student, Student_Class.student_id == Student.id
+    ).join(
+        TypeOfScore, TypeOfScore.id == Score.typeofscore_id
+    ).filter(
+        Student_Class.class_id == class_id,
+        Student_Class.semester_id == semester_id
+    ).group_by(
+        Student_Class.id
+    ))
+    if order_select == 0 :
+        return stats.all()
+    if order_select == 1:
+        return stats.order_by(func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor).asc()).all()
+    if order_select == 2 :
+        return stats.order_by(func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor).desc()).all()
+
+
+
 if __name__ == '__main__':
     with app.app_context():
-        print(load_class(1, 1, 1)[0])
+
+        print(calc_AVG_studnent_in_class(1, 1, 2))
+

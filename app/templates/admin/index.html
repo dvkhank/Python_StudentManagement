@@ -2,7 +2,8 @@
 
 {% block body %}
 {% if current_user.is_authenticated %}
-<div class="wrapper m-5 mt-5">
+<div class="pt-5 mt-5">
+<div class="wrapper">
     <div class="alert alert-success alert-dismissible">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
         <strong><i class="fa-solid fa-bullhorn" style="font-size: 36px"></i></strong>
@@ -12,7 +13,7 @@
 <div class="content">
     <div class="page-inner">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header bg-primary p-3">
                         <h2 class="card-title text-white">General statistics</h2>
@@ -71,68 +72,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card full-height">
-                    <div class="card-header bg-primary p-3">
-                        <h2 class="card-title text-white">Không biết thống kê cái gì</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="row py-3">
-                            <div class="col-md-4 d-flex flex-column justify-content-around">
-                                <div>
-                                    <span class="fw-bold text-success op-8">Test</span>
-                                    <p class="fw-bold" id="todayRevenue"></p>
-                                </div>
-                                <div>
-                                    <span class="fw-bold text-danger op-8">Test</span>
-                                    <p class="fw-bold" id="yesterdayRevenue"></p>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
-                                <canvas id="myChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    window.onload = function() {
-      const ctx = document.getElementById('myChart');
-
-      let data = [];
-      let labels = [];
-
-      {% for s in stats %}
-      labels.push('{{s[1]}}')
-      data.push({{s[2]}});
-      {% endfor %}
-
-      new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '# Số lượng',
-            data: data,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    }
-</script>
-
+</div>
 {% else %}
 
 {% endif %}
