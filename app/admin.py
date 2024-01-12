@@ -139,10 +139,10 @@ class MyStatsView(BaseView):
 
 
 admin.add_view(CustomUserView(Student, db.session, name="Manage Students"))
-admin.add_view(MyStatsView(name='Statistics'))
 admin.add_view(CustomUserView(Teacher, db.session, name="Manage Teachers"))
 admin.add_view(CustomUserView(Staff, db.session, name="Manage Staff"))
 admin.add_view(ScoreView(Score, db.session))
 admin.add_view(SubjectView(Subject, db.session))
 admin.add_view(GradeView(Grade, db.session))
+admin.add_view(MyStatsView(name='Statistics'))
 admin.add_view(LogoutView(name='Logout'))

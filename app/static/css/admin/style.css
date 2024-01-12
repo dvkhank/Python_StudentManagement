@@ -320,7 +320,7 @@ strong {
 }
 .pcoded-navbar .pcoded-inner-navbar li > a {
 text-align: left;
-    padding: 16px 40px;
+    padding: 10px 40px;
     font-size: 18px;
     margin: 5px 0 0;
     display: block;
@@ -2038,5 +2038,31 @@ text-align: left;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 2;
 }
 
+.button {
+  background: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);;
+  border-radius: 12px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 2.5;
+  padding: 0 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .2s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+  width: 100%;
+  border: none;
+  outline: none;
+}
+
+.button-edit {
+     background: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+}

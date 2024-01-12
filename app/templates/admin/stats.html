@@ -1,13 +1,13 @@
 {% extends 'admin/master.html' %}
 {% block body %}
 <div class="container">
-    <form class="row" style="padding: 10px" method="get" action="">
-        <div class="col-md-4 form-holder">
+    <form class="row mt-5 p-4" method="get" action="">
+        <div class="col-md-3 form-holder">
             <label class="form-label h6">
                 <i class="fa-solid fa-signature mr-2"></i>
                 Classes
             </label>
-            <select class="w-100 p-1 text-center" name="classes">
+            <select class="p-1 text-center rounded" name="classes">
                 {% for c in classes %}
                 <option value="{{c.Class.id}}">{{ c.Grade.name }}{{ c.Class.name }}</option>
                 {% endfor %}
@@ -18,33 +18,34 @@
                 <i class="fa-solid fa-signature mr-2"></i>
                 Semester
             </label>
-            <select class="w-100 p-1 text-center" name="semester">
+            <select class=" p-1 text-center rounded" name="semester">
                 {% for s in semester %}
                 <option value="{{s.Semester.id}}">{{ s.Semester.name }} - {{ s.Year.year }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-4 form-holder">
+        <div class="col-md-3 form-holder">
             <label class="form-label h6">
-                <i class="fa-solid fa-filter"></i>
+                 <i class="fa-solid fa-filter"></i>
                 Filter
             </label>
-            <select name="order">
-                <option value="0">None</option>
+            <select class=" p-1 text-center rounded" name="order">
+<!--                <option value="0">None</option>-->
                 <option value="1">ASC</option>
                 <option value="2">DESC</option>
             </select>
         </div>
+
         <div class="col-md-2 ">
-            <button style="margin-top: 15px;" type="submit text-center">
+            <button class="button " type="submit text-center">
                 Find
             </button>
         </div>
     </form>
 
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-md-8">
-            <p>Class {{class_name[0]}}{{class_name[1]}} in {{semester_name}}</p>
+            <h5>Class {{class_name[0]}}{{class_name[1]}} in {{semester_name}}</h5>
             <table class="table">
                 <thead>
                 <tr>
