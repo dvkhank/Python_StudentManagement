@@ -6,13 +6,13 @@
             <h1 class="text-center mb-4">
                 <i class="fa-regular fa-address-card mr-2"></i>Information Student
             </h1>
-            <form class="row" method="POST" action="pay_fee">
+            <form class="row" method="get" action="pay_fee">
                 <div class="col-md-12 form-holder">
                     <label class="form-label h6">
                         <i class="fa-solid fa-signature mr-2"></i>
                         Semester
                     </label>
-                    <select class="w-100 p-1 text-center">
+                    <select class="w-100 p-1 text-center" name="semester">
                         {% for s in semester %}
                         <option value="{{s.Semester.id}}">{{ s.Semester.name }} - {{ s.Year.year }}</option>
                         {% endfor %}
@@ -20,11 +20,43 @@
                 </div>
 
                 <div class="col-md-5 m-auto">
-                    <button type="submit text-center">
+                    <button type="submit" class="text-center">
                         Check
                     </button>
                 </div>
             </form>
+
+            <!-- Display fee information -->
+            {% if fees %}
+            <div class="col-md-12 mt-3">
+                <form method="post" action="/process_payment">
+                    <h2 class="text-center mb-4">Fee Information</h2>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Select</th>
+                            <th scope="col">Fee Type</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for fee in fees %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selected_fees[]" value="{{ fee.id }}">
+                            </td>
+                            <td>{{ fee.name }}</td>
+                            <td>{{ fee.fee }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary">Pay Selected Fees</button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
         </div>
         <div class="col-xl-5 mt-5 pt-5" style="font-size: 18px;">
             <h4>Payment methods</h4>
@@ -36,4 +68,5 @@
         </div>
     </div>
 </div>
+<script src="{{url_for('static', filename='js/fee.js')}}"></script>
 {%  endblock  %}

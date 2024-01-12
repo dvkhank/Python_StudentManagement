@@ -1,6 +1,6 @@
 from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermission, Permission, Admin, \
     Staff, Year, Semester, Class, Grade, Student_Class, Subject_Teacher_Class, Subject_Teacher, Subject, TypeOfScore, \
-    Score, Rule
+    Score, Rule, Fee, Fee_Semester
 from app import app, db
 import hashlib
 
@@ -54,8 +54,9 @@ def load_type_of_score():
     return TypeOfScore.query.all()
 
 
-def add_score(teacher_id, score, typeofscore_id):
-    score = Score()
+#
+# def add_score(teacher_id, score, typeofscore_id):
+#     score = Score()
 
 
 def load_setofpermission():
@@ -122,6 +123,11 @@ def load_year():
         return Year.query.all()
 
 
+def load_fee(semester_id):
+    return db.session.query(Fee).filter(Semester.id == semester_id, Fee.id == Fee_Semester.fee_id,
+                                        Semester.id == Fee_Semester.semester_id).all()
+
+
 def load_semester():
     with app.app_context():
         return db.session.query(Semester, Year).filter(Semester.id == Year.id).all()
@@ -164,11 +170,13 @@ def add_Student_Class(student_id, class_id, semester_id):
         db.session.add(s_c)
         db.session.commit()
 
-def load_class (student_id, class_id, semester_id):
+
+def load_class(student_id, class_id, semester_id):
     with app.app_context():
         return db.session.query(Student_Class.id).filter(Student_Class.class_id == class_id,
                                                          Student_Class.student_id == student_id,
                                                          Student_Class.semester_id == semester_id).first()
+
 
 def load_teacher_in_class(teacher_id, class_id):
     return db.session.query(Subject_Teacher_Class.id). \
@@ -176,8 +184,10 @@ def load_teacher_in_class(teacher_id, class_id):
                Subject_Teacher.teacher_id == teacher_id, Subject.id == Subject_Teacher.subject_id,
                Subject_Teacher_Class.class_id == class_id).first()
 
+
 def add_Score(student_class_id, subject_teacher_class_id, typeofscore_id, score):
-    score1 = Score(student_class_id=student_class_id, subject_teacher_class_id=subject_teacher_class_id, typeofscore_id=typeofscore_id, score=score)
+    score1 = Score(student_class_id=student_class_id, subject_teacher_class_id=subject_teacher_class_id,
+                   typeofscore_id=typeofscore_id, score=score)
     db.session.add(score1)
     db.session.commit()
 
@@ -186,13 +196,15 @@ def load_semesters():
     with app.app_context():
         return Semester.query.all()
 
+
 def count_student():
-        return Student.query.count()
+    return Student.query.count()
+
 
 def count_teacher():
-        return Teacher.query.count()
+    return Teacher.query.count()
 
 
 if __name__ == '__main__':
     with app.app_context():
-        print(load_class(1,1,1)[0])
+        print(load_class(1, 1, 1)[0])

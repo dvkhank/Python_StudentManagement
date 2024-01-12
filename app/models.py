@@ -62,6 +62,7 @@ class Class(Base2):
     def __str__(self):
         return self.name
 
+
 class Rule(Base2):
     __tablename__ = 'rule'
     min = Column(Integer, nullable=False)
@@ -107,6 +108,7 @@ class Semester(Base2):
 
     year_id = Column(Integer, ForeignKey('year.id'), nullable=False)
     students_classes = relationship(Student_Class, backref='semester', lazy=True)
+    fee_class = relationship('Fee_Semester', backref='semester', lazy=True)
 
 
 class Year(Base1):
@@ -117,6 +119,17 @@ class Year(Base1):
 
     def __str__(self):
         return self.year
+
+
+class Fee(Base2):
+    __tablename__ = 'fee'
+    fee = Column(Integer, nullable=False)
+    fee_class = relationship('Fee_Semester', backref='fee', lazy=True)
+
+
+class Fee_Semester(Base1):
+    fee_id = Column(Integer, ForeignKey(Fee.id), nullable=False)
+    semester_id = Column(Integer, ForeignKey(Semester.id), nullable=False)
 
 
 class Subject(Base2):
@@ -252,9 +265,9 @@ if __name__ == '__main__':
         r1 = Rule(name="CLass", min=1, max=40)
         r2 = Rule(name="Age", min=15, max=20)
         r3 = Rule(name="Grade", min=1, max=20)
-        r4 = Rule(name="15p", min=1, max = 5)
-        r5 = Rule(name="1Tiet", min=1, max = 3)
-        r6 = Rule(name="CuoiKi", min=1, max = 1)
+        r4 = Rule(name="15p", min=1, max=5)
+        r5 = Rule(name="1Tiet", min=1, max=3)
+        r6 = Rule(name="CuoiKi", min=1, max=1)
         db.session.add_all([r1, r2, r3, r4, r5])
 
         g1 = Grade(name='10')
@@ -306,4 +319,9 @@ if __name__ == '__main__':
         score6 = Score(student_class_id=2, subject_teacher_class_id=1, typeofscore_id=3, score=9.5)
         db.session.add_all([score1, score2, score3, score4, score5, score6])
 
+        fee1 = Fee(name="BHYT", fee=100000)
+        fee2 = Fee(name="Boi bo giao vien", fee='500000')
+        f_s1 = Fee_Semester(fee_id=1, semester_id=1)
+        f_s2 = Fee_Semester(fee_id=2, semester_id=1)
+        db.session.add_all([fee1, fee2, f_s1, f_s2])
         db.session.commit()

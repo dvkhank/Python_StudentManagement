@@ -2,7 +2,7 @@ import math
 from functools import wraps
 
 from flask import render_template, request, redirect, jsonify, url_for, session
-import dao
+import dao, utils
 from app import app, login
 from flask_login import login_user, logout_user, login_required, current_user
 
@@ -43,7 +43,6 @@ def create_scoresheet():
     student_id_add = 0
     if request.args.get("student_id_add"):
         student_id_add = request.args.get("student_id_add")
-
 
     students_list = {}
     semester_list = dao.load_semester()
@@ -99,7 +98,7 @@ def create_scoresheet_add():
             subject_teacher_class_id=dao.load_teacher_in_class(teacher_id=current_user.id, class_id=int(class_id))[
                 0],
             typeofscore_id=3, score=float(scorecuoiki))
-    return render_template("add_create_scoresheet.html",student = student, rule_15p=rule_15p, rule_1tiet= rule_1tiet)
+    return render_template("add_create_scoresheet.html", student=student, rule_15p=rule_15p, rule_1tiet=rule_1tiet)
 
 
 @app.route('/admin/login', methods=['post'])
@@ -143,13 +142,47 @@ def profile_user():
     return render_template('profile.html', user=user)
 
 
-@app.route("/pay_fee")
+@app.route("/api/fee", methods=['post'])
+def add_fee():
+    """
+    "fee": {
+    "1" {
+    "id" : "1",
+    "name" : "ABC",
+    "fee" : "500000"
+        }, "2" {
+    "id" : "2",
+    "name" : "DEF",
+    "fee" : "900000"
+        }
+    }
+
+    :return:
+    """
+    fee = session.get('fee')
+
+    data = request.json
+    if fee is None:
+        fee = {}
+    id = str(data.get("id"))
+    fee[id] = {
+        "id": id,
+        "name": data.get("name"),
+        "fee": data.get("fee")
+    }
+    session["fee"] = fee
+    print(fee)
+    return jsonify(utils.count_fee(fee))
+
+
+@app.route("/pay_fee", methods=['post', 'get'])
 def pay_fee():
     semester = dao.load_semester()
-    if request.method == 'POST':
-        year = request.form.get()
+    if request.method == 'GET':
+        chosen_semester = request.args.get('semester')
+        fees = dao.load_fee(chosen_semester)
 
-    return render_template('pay_fee.html', semester=semester)
+    return render_template('pay_fee.html', semester=semester, fees=fees)
 
 
 @login.user_loader
@@ -175,7 +208,7 @@ def create_student():
         gender = request.form.get("gender_student")
         dao.add_student(last_name=last_name, first_name=first_name, date_of_birth=date_of_birth, email=email,
                         phone=phone, username=username, password=password, address=hometown, gender=int(gender))
-    return render_template('create_student.html', students=students_list, rule_age= rule_age)
+    return render_template('create_student.html', students=students_list, rule_age=rule_age)
 
 
 @app.route("/create_class", methods=['post', 'get'])
