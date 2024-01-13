@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from functools import wraps
 from random import randint
 
-from flask import render_template, request, redirect, jsonify, url_for, session
+from flask import render_template, request, redirect, jsonify, url_for, session, flash
 import dao, utils, vnpay
 from app import app, login
 from flask_login import login_user, logout_user, login_required, current_user
@@ -444,16 +444,18 @@ def confirm_otp():
 def change_password():
     username = session.get('username')
     setofpermission = int(session['setofpermission'])
+    error_message = None
     if request.method == 'POST':
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
 
         if new_password.strip() == confirm_password.strip():
             dao.change_user_password(username=username, new_password=new_password, setofpermission=setofpermission)
-
+            flash('Password changed successfully', 'success')
             return redirect(url_for('user_login'))
-
-    return render_template('change_password.html', username=username)
+        else:
+            error_message = 'Passwords do not match. Please try again.'
+    return render_template('change_password.html', username=username,error_message=error_message)
 
 
 # @app.context_processor
