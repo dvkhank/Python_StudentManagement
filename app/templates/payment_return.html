@@ -1,7 +1,27 @@
 {% extends 'layout/base.html' %}
 {% block content %}
-<h1>{{ title }}</h1>
-<p>Result: {{ result }}</p>
-<p>Order ID: {{ order_id }}</p>
-<p>Amount: {{ amount }}</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Kết quả thanh toán</h5>
+                </div>
+                <div class="card-body">
+                    {% if success %}
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check-circle success-icon"></i>
+                        Thanh toán thành công!
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-times-circle error-icon"></i>
+                        Lỗi xác thực chữ ký hash!
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
