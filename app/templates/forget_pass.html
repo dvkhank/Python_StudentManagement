@@ -1,0 +1,25 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Thông tin người dùng</h2>
+    <form method="post" action="forget_pass">
+        <div class="mb-3">
+            <label for="positionSelect" class="form-label">Chọn loại chức vụ</label>
+            <select class="form-select" id="positionSelect" name="set_of_permission">
+                {% for s in set_of_permission %}
+
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="usernameInput" class="form-label">Username</label>
+            <input type="text" class="form-control" id="usernameInput" name="username" placeholder="Nhập username">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

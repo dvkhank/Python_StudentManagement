@@ -228,38 +228,38 @@ if __name__ == '__main__':
         db.session.commit()
 
         t1 = Teacher(last_name='Duong', first_name='Huu Thanh', date_of_birth='2000/12/06', email='thanhdt@gmail.com',
-                     phone='013525432', username='thanh', password='thanh', address='TPHCM', gender=1, degree='Master',
+                     phone='013525432', username='thanh', password=hashlib.md5('thanh'.encode()).hexdigest(), address='TPHCM', gender=1, degree='Master',
                      setofpermission=1)
         t2 = Teacher(last_name='Ho', first_name='Huong Thien', date_of_birth='1990/12/06', email='thienhhmail.com',
-                     phone='012525432', username='thien', password='thien', address='TPHCM', gender=1, degree='Master',
+                     phone='012525432', username='thien', password=hashlib.md5('thien'.encode()).hexdigest(), address='TPHCM', gender=1, degree='Master',
                      setofpermission=1)
         t3 = Teacher(last_name='Nguyen Thi', first_name='Phuong Trang', date_of_birth='1990/12/07',
                      email='trangntpmail.com',
-                     phone='012528432', username='trang', password='trang', address='Nha Trang', gender=0,
+                     phone='012528432', username='trang', password=hashlib.md5('trang'.encode()).hexdigest(), address='Nha Trang', gender=0,
                      degree='Master',
                      setofpermission=1)
         db.session.add_all([t1, t2, t3])
 
         a1 = Admin(last_name='Duong', first_name='Van Khanh', date_of_birth='2003/12/06', email='khanhdv@gmail.com',
-                   phone='0123456789', username='khanh', password='khanh', address='Ha Noi', gender=1,
+                   phone='0123456789', username='khanh', password=hashlib.md5('khanh'.encode()).hexdigest(), address='Ha Noi', gender=1,
                    setofpermission=4)
         db.session.add(a1)
         a2 = Admin(last_name='Duong', first_name='Van Khang', date_of_birth='2003/11/06', email='khangdv@gmail.com',
-                   phone='0123456777', username='khang', password='khang', address='Da Nang', gender=1,
+                   phone='0123456777', username='khang', password=hashlib.md5('khang'.encode()).hexdigest(), address='Da Nang', gender=1,
                    setofpermission=4)
         db.session.add(a2)
 
         s1 = Student(last_name='Dang', first_name='Trung Thang', date_of_birth='2003/12/07', email='thangdt@gmail.com',
-                     phone='0123456788', username='thang', password='thang', address='Khanh Hoa', gender=1,
+                     phone='0123456788', username='thang', password=hashlib.md5('thang'.encode()).hexdigest(), address='Khanh Hoa', gender=1,
                      setofpermission=2)
         db.session.add(s1)
         s2 = Student(last_name='Dang', first_name='Trung Tien', date_of_birth='2003/12/08', email='tiendt@gmail.com',
-                     phone='0123436788', username='tien', password='tien', address='Khanh Hoa', gender=1,
+                     phone='0123436788', username='tien', password=hashlib.md5('tien'.encode()).hexdigest(), address='Khanh Hoa', gender=1,
                      setofpermission=2)
         db.session.add(s2)
 
         st1 = Staff(last_name='Cao', first_name='Ngoc Son', date_of_birth='2000/12/05', email='soncn@gmail.com',
-                    phone='0123456787', username='son', password='son', address='Long An', gender=1, setofpermission=3)
+                    phone='0123456787', username='son', password=hashlib.md5('son'.encode()).hexdigest(), address='Long An', gender=1, setofpermission=3)
         db.session.add(st1)
 
         r1 = Rule(name="CLass", min=1, max=40)

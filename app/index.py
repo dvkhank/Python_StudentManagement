@@ -1,5 +1,10 @@
+import hashlib
 import math
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from functools import wraps
+from random import randint
 
 from flask import render_template, request, redirect, jsonify, url_for, session
 import dao, utils, vnpay
@@ -7,10 +12,6 @@ from app import app, login
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 
-VNPAY_TERMINAL_ID = 'A18060DP'
-VNPAY_HASH_SECRET_KEY = 'PASLWDWBAGFDSQZJOSREVQQGGEZDZNGX'
-VNPAY_TEST_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
-vnp = vnpay.VNPAY()  # Đảm bảo bạn đã khởi tạo class VNPAY theo cách đúng
 
 @app.route("/")
 def index():
@@ -208,30 +209,33 @@ def pay_fee():
     return render_template('pay_fee.html', semester=semester, fees=fees)
 
 
+VNPAY_TERMINAL_ID = 'A18060DP'
+VNPAY_HASH_SECRET_KEY = 'PASLWDWBAGFDSQZJOSREVQQGGEZDZNGX'
+VNPAY_TEST_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+import logging
+
+
 @app.route('/payment', methods=['POST'])
 def payment():
     if request.method == 'POST':
         total = int(request.form.get('totalAmount'))
         info = "Thanh toan hoc phi"
-        type = "Hoc phi"
-        selected_fee_ids = request.form.getlist('selected_fees[]')
-        # Sử dụng class VNPAY để tạo URL thanh toán
-        vnp = vnpay.VNPAY()  # Đảm bảo bạn đã khởi tạo class VNPAY theo cách đúng
-        vnp.requestData['vnp_Version'] = '2.1.0'
-        vnp.requestData['vnp_Command'] = 'pay'
-        vnp.requestData['vnp_TmnCode'] = VNPAY_TERMINAL_ID  # Thay thế bằng mã TmnCode thực tế của bạn
-        vnp.requestData['vnp_Amount'] = total  # Thay thế bằng số tiền thực tế
-        vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')
-        vnp.requestData['vnp_CurrCode'] = 'VND'
-        vnp.requestData['vnp_Locale'] = 'vn'
-        vnp.requestData['vnp_OrderInfo'] = info  # Thay thế bằng thông tin mô tả nội dung thanh toán
-        vnp.requestData['vnp_OrderType'] = type
-        vnp.requestData[
-            'vnp_ReturnUrl'] = 'http://127.0.0.1:5000/pay_fee'  # Thay thế bằng URL thông báo kết quả giao dịch
-        vnp.requestData[
-            'vnp_TxnRef'] = '1'  # Thay thế bằng mã tham chiếu của giao dịch tại hệ thống của bạn
-        vnpay_payment_url = vnp.get_payment_url(VNPAY_TEST_URL,
-                                                VNPAY_HASH_SECRET_KEY)
+        order_type = "Hoc phi"
+
+        # Thay thế bằng thông tin cụ thể của bạn
+        tmn_code = VNPAY_TERMINAL_ID
+        hash_secret_key = VNPAY_HASH_SECRET_KEY
+        test_url = VNPAY_TEST_URL
+
+        # Khởi tạo class VNPAY với thông tin cần thiết
+        vnp = vnpay.VNPAY(tmn_code, hash_secret_key, test_url)
+
+        # Set thông tin đơn hàng
+        vnp.set_order_info(total, info, order_type, 'http://127.0.0.1:5000/pay_fee')
+
+        # Lấy URL thanh toán
+        vnpay_payment_url = vnp.get_payment_url()
+
         print(total)
         print(vnpay_payment_url)
 
@@ -241,41 +245,64 @@ def payment():
         return render_template("payment.html", title="Thanh toán")
 
 
-# Xử lý IPN URL
-@app.route('/payment_ipn', methods=['GET'])
-def payment_ipn():
-    selected_fee_ids = request.args.getlist('selected_fees[]')
-    if selected_fee_ids:
+@app.route('/vnpay_return', methods=['GET'])
+def vnpay_return():
+    # Xử lý kết quả trả về từ VNPay
+    # Đọc và kiểm tra chữ ký hash
+    vnpay_data = request.args.to_dict()
+    secure_hash = vnpay_data.pop('vnp_SecureHash', None)
+    secure_hash_type = vnpay_data.pop('vnp_SecureHashType', None)
 
-        vnp.responseData = selected_fee_ids
-        # ...Xử lý dữ liệu và kiểm tra chữ ký
-        if vnp.validate_response(VNPAY_HASH_SECRET_KEY):
-            # Xử lý kết quả thanh toán và cập nhật vào Database
-            # ...
-            return jsonify({'RspCode': '00', 'Message': 'Confirm Success'})
-        else:
-            return jsonify({'RspCode': '97', 'Message': 'Invalid Signature'})
+    # Sắp xếp dữ liệu theo key để tạo chuỗi hash
+    sorted_data = sorted(vnpay_data.items())
+    hash_data = "&".join(f"{key}={value}" for key, value in sorted_data)
+
+    # Kiểm tra chữ ký hash
+    computed_hash = hashlib.sha256(f"{VNPAY_HASH_SECRET_KEY}&{hash_data}".encode('utf-8')).hexdigest()
+
+    if secure_hash == computed_hash:
+        # Chữ ký hợp lệ, xử lý thông tin thanh toán ở đây
+        return "Thanh toán thành công!"
     else:
-        return jsonify({'RspCode': '99', 'Message': 'Invalid request'})
+        # Chữ ký không hợp lệ, xử lý lỗi ở đây
+        return "Lỗi xác thực chữ ký hash!"
 
 
-# Xử lý ReturnURL
-@app.route('/payment_return', methods=['GET'])
-def payment_return():
-    selected_fee_ids = request.form.getlist('selected_fees[]')
-
-    if selected_fee_ids:
-        vnp.responseData = selected_fee_ids
-        # ...Xử lý dữ liệu và kiểm tra chữ ký
-        if vnp.validate_response(VNPAY_HASH_SECRET_KEY):
-            # Hiển thị thông tin kết quả thanh toán cho khách hàng
-            # Truyền thêm thông tin về các học phí đã chọn vào template
-            return render_template("payment_return.html", title="Kết quả thanh toán", result="Thành công",
-                                   order_id=1, amount=1, selected_fee_ids=selected_fee_ids)
-        else:
-            return render_template("payment_return.html", title="Kết quả thanh toán", result="Lỗi", msg="Sai checksum")
-    else:
-        return render_template("payment_return.html", title="Kết quả thanh toán")
+# # Xử lý IPN URL
+# @app.route('/payment_ipn', methods=['GET'])
+# def payment_ipn():
+#     selected_fee_ids = request.args.getlist('selected_fees[]')
+#     if selected_fee_ids:
+#
+#         vnp.responseData = selected_fee_ids
+#         # ...Xử lý dữ liệu và kiểm tra chữ ký
+#         if vnp.validate_response(VNPAY_HASH_SECRET_KEY):
+#             # Xử lý kết quả thanh toán và cập nhật vào Database
+#             # ...
+#             return jsonify({'RspCode': '00', 'Message': 'Confirm Success'})
+#         else:
+#             return jsonify({'RspCode': '97', 'Message': 'Invalid Signature'})
+#     else:
+#         return jsonify({'RspCode': '99', 'Message': 'Invalid request'})
+#
+#
+# # Xử lý ReturnURL
+# @app.route('/payment_return', methods=['GET'])
+# def payment_return():
+#     selected_fee_ids = request.form.getlist('selected_fees[]')
+#
+#     if selected_fee_ids:
+#         vnp.responseData = selected_fee_ids
+#         # ...Xử lý dữ liệu và kiểm tra chữ ký
+#         if vnp.validate_response(VNPAY_HASH_SECRET_KEY):
+#             # Hiển thị thông tin kết quả thanh toán cho khách hàng
+#             # Truyền thêm thông tin về các học phí đã chọn vào template
+#             return render_template("payment_return.html", title="Kết quả thanh toán", result="Thành công",
+#                                    order_id=1, amount=1, selected_fee_ids=selected_fee_ids)
+#         else:
+#             return render_template("payment_return.html", title="Kết quả thanh toán", result="Lỗi", msg="Sai checksum")
+#     else:
+#         return render_template("payment_return.html", title="Kết quả thanh toán")
 
 
 @login.user_loader
@@ -338,6 +365,95 @@ def add_student_class():
 
     return render_template("/add_student_class.html", class_name=class_name, semester_name=semester_name,
                            rules=rule_class, students=students_list, students_add=students_add_list)
+
+
+def generate_otp():
+    length = 6
+    otp = ''
+    for _ in range(length):
+        otp += str(randint(0, 9))
+
+    return otp
+
+
+def verify_otp(otp, user_otp):
+    if str(otp).__eq__(str(user_otp)):
+        return True
+    return False
+
+
+def send_otp_email(email, otp):
+    myemail = '2151050187khanh@ou.edu.vn'
+    mypassword = '079203035064'
+
+    connection = smtplib.SMTP("smtp.gmail.com", 587)
+    connection.starttls()
+    connection.login(user=myemail, password=mypassword)
+
+    message = MIMEMultipart()
+    message['From'] = myemail
+    message['To'] = email
+    message['Subject'] = "Your OTP"  # Chủ đề của email
+    body = f"Your OTP is: {otp}"
+    message.attach(MIMEText(body, 'plain'))
+
+    connection.send_message(message)
+    connection.quit()
+
+
+@app.route('/forget_pass', methods=['POST', 'GET'])
+def forget_pass():
+    set_of_permission = dao.load_setofpermission()
+    if request.method == 'POST':
+        setofpermission = request.form.get('set_of_permission')
+        session['setofpermission'] = setofpermission
+        username = request.form.get('username')
+        if username:
+            user = dao.get_user_by_username(username, int(setofpermission))
+            print(user)
+
+            if user:
+                user_mail = user.email
+                ma_otp = generate_otp()
+                send_otp_email(user_mail, ma_otp)
+                session['username'] = username
+                session['ma_otp'] = ma_otp
+
+                return redirect(url_for('confirm_otp'))
+
+    return render_template('forget_pass.html', set_of_permission=set_of_permission)
+
+
+@app.route('/confirm-otp', methods=['POST', 'GET'])
+def confirm_otp():
+    ma_otp = session['ma_otp']
+    if request.method == 'POST':
+        user_otp = request.form.get('otp')
+        is_valid = verify_otp(ma_otp, user_otp)
+        if is_valid:
+            return redirect(url_for('change_password'))
+
+        error_message = 'Invalid OTP. Please try again.'
+        return render_template('confirm_otp.html', error_message=error_message)
+
+    # Nếu là method GET, hiển thị form xác nhận OTP
+    return render_template('confirm_otp.html')
+
+
+@app.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    username = session.get('username')
+    setofpermission = int(session['setofpermission'])
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        if new_password.strip() == confirm_password.strip():
+            dao.change_user_password(username=username, new_password=new_password, setofpermission=setofpermission)
+
+            return redirect(url_for('user_login'))
+
+    return render_template('change_password.html', username=username)
 
 
 # @app.context_processor

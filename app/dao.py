@@ -17,6 +17,17 @@ def get_user_by_id(user_id, set_of_permission_id):
         return Admin.query.get(user_id)
 
 
+def get_user_by_username(username, set_of_permission_id):
+    if set_of_permission_id == 1:
+        return Teacher.query.filter(Teacher.username == username).first()
+    if set_of_permission_id == 2:
+        return Student.query.filter(Student.username == username).first()
+    if set_of_permission_id == 3:
+        return Staff.query.filter(Staff.username == username).first()
+    if set_of_permission_id == 4:
+        return Admin.query.filter(Admin.username == username).first()
+
+
 def load_permission(set_of_permission_id):
     permission = db.session.query(Permission, SetOfPermission, Permission_SetOfPermission).filter(
         Permission.id == Permission_SetOfPermission.permission_id,
@@ -68,16 +79,16 @@ def auth_user(username, password, set_of_permission):
     with app.app_context():
         if set_of_permission == '1':
             return Teacher.query.filter(Teacher.username.__eq__(username),
-                                        Teacher.password.__eq__(password)).first()
+                                        Teacher.password.__eq__(hashlib.md5(password.encode()).hexdigest())).first()
         if set_of_permission == '2':
             return Student.query.filter(Student.username.__eq__(username),
-                                        Student.password.__eq__(password)).first()
+                                        Student.password.__eq__(hashlib.md5(password.encode()).hexdigest())).first()
         if set_of_permission == '3':
             return Staff.query.filter(Staff.username.__eq__(username),
-                                      Staff.password.__eq__(password)).first()
+                                      Staff.password.__eq__(hashlib.md5(password.encode()).hexdigest())).first()
         if set_of_permission == '4':
             return Admin.query.filter(Admin.username.__eq__(username),
-                                      Admin.password.__eq__(password)).first()
+                                      Admin.password.__eq__(hashlib.md5(password.encode()).hexdigest())).first()
 
 
 def auth_admin(username, password):
@@ -89,7 +100,8 @@ def auth_admin(username, password):
 def add_student(last_name, first_name, date_of_birth, email, phone, username, password, address, gender):
     with app.app_context():
         student = Student(last_name=last_name, first_name=first_name, date_of_birth=date_of_birth, email=email,
-                          phone=phone, username=username, password=password, address=address, gender=gender,
+                          phone=phone, username=username, password=hashlib.md5(password.encode()).hexdigest(),
+                          address=address, gender=gender,
                           setofpermission=2)
         db.session.add(student)
         db.session.commit()
@@ -207,18 +219,19 @@ def count_teacher():
 
 
 def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
-    stats=  (db.session.query(Student,
-                            func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).label('AVG'),
-                            case(
-                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 8,
-                                 'VERRY GOOD'),
-                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 6.5,
-                                 'GOOD'),
-                                (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 5,
-                                 'PASS'),
-                                else_='FAIL'
-                            ).label('Result')
-                            ).join(
+    stats = (db.session.query(Student,
+                              func.sum(Score.score * Score.typeofscore_id) / func.sum(Score.typeofscore_id).label(
+                                  'AVG'),
+                              case(
+                                  (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 8,
+                                   'VERRY GOOD'),
+                                  (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 6.5,
+                                   'GOOD'),
+                                  (func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor) >= 5,
+                                   'PASS'),
+                                  else_='FAIL'
+                              ).label('Result')
+                              ).join(
         Student_Class, Score.student_class_id == Student_Class.id
     ).join(
         Student, Student_Class.student_id == Student.id
@@ -230,17 +243,24 @@ def calc_AVG_studnent_in_class(class_id, semester_id, order_select):
     ).group_by(
         Student_Class.id
     ))
-    if order_select == 0 :
+    if order_select == 0:
         return stats.all()
     if order_select == 1:
         return stats.order_by(func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor).asc()).all()
-    if order_select == 2 :
+    if order_select == 2:
         return stats.order_by(func.sum(Score.score * TypeOfScore.factor) / func.sum(TypeOfScore.factor).desc()).all()
 
+
+def change_user_password(username, new_password, setofpermission):
+    user = get_user_by_username(username, setofpermission)
+
+    if user is not None:
+        user.password = hashlib.md5(new_password.encode()).hexdigest()
+        db.session.commit()
+    print(user)
+    return user
 
 
 if __name__ == '__main__':
     with app.app_context():
-
-        print(calc_AVG_studnent_in_class(1, 1, 2))
-
+        print(get_user_by_username('thanh', 1))
