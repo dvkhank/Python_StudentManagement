@@ -37,6 +37,15 @@ def load_permission(set_of_permission_id):
     return permission
 
 
+def get_score_for_student(student_id, semester_id):
+    return db.session.query(Score.score, TypeOfScore.name).join(Student_Class).join(TypeOfScore).filter(
+        Student_Class.student_id == student_id,
+        Student_Class.semester_id == semester_id
+    ).all()
+
+
+
+
 def load_class(teacher_id):
     return db.session.query(Class, Grade, Subject_Teacher_Class).filter(Grade.id == Class.grade_id,
                                                                         Subject_Teacher_Class.class_id == Class.id,
@@ -139,6 +148,17 @@ def load_year():
 def load_fee(semester_id):
     return db.session.query(Fee).filter(Semester.id == semester_id, Fee.id == Fee_Semester.fee_id,
                                         Semester.id == Fee_Semester.semester_id).all()
+
+
+# def add_payment(student_id, semester_fee_id, amount, bank_code, order_info, pay_date, response_code, tmn_code,
+#                 transaction_no, transaction_status, txn_ref, secure_hash):
+#     payment = Payment(
+#         student_id=student_id, semester_fee_id=semester_fee_id, amount=amount, bank_code=bank_code,
+#         order_info=order_info, pay_date=pay_date, response_code=response_code, tmn_code=tmn_code,
+#         transaction_no= transaction_no, transaction_status=transaction_status, txn_ref=txn_ref, secure_hash=secure_hash
+#     )
+#     db.session.add(payment)
+#     db.session.commit()
 
 
 def load_semester():

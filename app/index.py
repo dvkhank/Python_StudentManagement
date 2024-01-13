@@ -166,53 +166,33 @@ def profile_user():
     return render_template('profile.html', user=user)
 
 
-@app.route("/api/fee", methods=['post'])
-def add_fee():
-    """
-    "fee": {
-    "1" {
-    "id" : "1",
-    "name" : "ABC",
-    "fee" : "500000"
-        }, "2" {
-    "id" : "2",
-    "name" : "DEF",
-    "fee" : "900000"
-        }
-    }
-
-    :return:
-    """
-    fee = session.get('fee')
-
-    data = request.json
-    if fee is None:
-        fee = {}
-    id = str(data.get("id"))
-    fee[id] = {
-        "id": id,
-        "name": data.get("name"),
-        "fee": data.get("fee")
-    }
-    session["fee"] = fee
-    print(fee)
-    return jsonify(utils.count_fee(fee))
-
-
 @app.route("/pay_fee", methods=['post', 'get'])
 def pay_fee():
     semester = dao.load_semester()
     if request.method == 'GET':
         chosen_semester = request.args.get('semester')
+        session['chosen_semester'] = chosen_semester
         fees = dao.load_fee(chosen_semester)
 
     return render_template('pay_fee.html', semester=semester, fees=fees)
 
 
+@app.route("/check_results", methods=['post', 'get'])
+def check_results():
+    semester = dao.load_semester()
+
+    if request.method == 'GET':
+        chosen_semester = request.args.get('semester')
+        score_values = dao.get_score_for_student(current_user.id, chosen_semester)
+
+    return render_template('check_results.html',semester=semester, scores=score_values, student_name = current_user.first_name)
+
+
+
+
 VNPAY_TERMINAL_ID = 'A18060DP'
 VNPAY_HASH_SECRET_KEY = 'PASLWDWBAGFDSQZJOSREVQQGGEZDZNGX'
 VNPAY_TEST_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
-import logging
 
 
 @app.route('/payment', methods=['POST'])
@@ -221,88 +201,46 @@ def payment():
         total = int(request.form.get('totalAmount'))
         info = "Thanh toan hoc phi"
         order_type = "Hoc phi"
-
-        # Thay thế bằng thông tin cụ thể của bạn
-        tmn_code = VNPAY_TERMINAL_ID
-        hash_secret_key = VNPAY_HASH_SECRET_KEY
-        test_url = VNPAY_TEST_URL
-
-        # Khởi tạo class VNPAY với thông tin cần thiết
-        vnp = vnpay.VNPAY(tmn_code, hash_secret_key, test_url)
-
-        # Set thông tin đơn hàng
-        vnp.set_order_info(total, info, order_type, 'http://127.0.0.1:5000/pay_fee')
-
-        # Lấy URL thanh toán
-        vnpay_payment_url = vnp.get_payment_url()
-
-        print(total)
+        bank_code = "NCB"
+        vnp = vnpay.Vnpay()
+        vnp.requestData['vnp_Version'] = '2.1.0'
+        vnp.requestData['vnp_Command'] = 'pay'
+        vnp.requestData['vnp_TmnCode'] = VNPAY_TERMINAL_ID
+        vnp.requestData['vnp_Amount'] = total * 100
+        vnp.requestData['vnp_CurrCode'] = 'VND'
+        vnp.requestData['vnp_TxnRef'] = randint(1, 999)
+        vnp.requestData['vnp_OrderInfo'] = info
+        vnp.requestData['vnp_OrderType'] = order_type
+        vnp.requestData['vnp_Locale'] = 'vn'
+        vnp.requestData['vnp_BankCode'] = bank_code
+        vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')
+        vnp.requestData['vnp_IpAddr'] = "127.0.0.1"
+        vnp.requestData['vnp_ReturnUrl'] = "http://127.0.0.1:5000/vnpay_return"
+        vnpay_payment_url = vnp.get_payment_url(VNPAY_TEST_URL, VNPAY_HASH_SECRET_KEY)
         print(vnpay_payment_url)
-
-        # Chuyển hướng đến VNPAY
         return redirect(vnpay_payment_url)
-    else:
-        return render_template("payment.html", title="Thanh toán")
 
 
 @app.route('/vnpay_return', methods=['GET'])
 def vnpay_return():
-    # Xử lý kết quả trả về từ VNPay
-    # Đọc và kiểm tra chữ ký hash
     vnpay_data = request.args.to_dict()
-    secure_hash = vnpay_data.pop('vnp_SecureHash', None)
-    secure_hash_type = vnpay_data.pop('vnp_SecureHashType', None)
+    secret_key = VNPAY_HASH_SECRET_KEY
+    vnp = vnpay.Vnpay()
+    success = vnp.validate_response(vnpay_data, secret_key)
 
-    # Sắp xếp dữ liệu theo key để tạo chuỗi hash
-    sorted_data = sorted(vnpay_data.items())
-    hash_data = "&".join(f"{key}={value}" for key, value in sorted_data)
+    # amount = int(vnpay_data['vnp_Amount']),
+    # bank_code = vnpay_data['vnp_BankCode'],
+    # order_info = vnpay_data['vnp_OrderInfo'],
+    # pay_date = vnpay_data['vnp_PayDate'],
+    # response_code = vnpay_data['vnp_ResponseCode'],
+    # tmn_code = vnpay_data['vnp_TmnCode'],
+    # transaction_no = vnpay_data['vnp_TransactionNo'],
+    # transaction_status = vnpay_data['vnp_TransactionStatus'],
+    # txn_ref = vnpay_data['vnp_TxnRef'],
+    # secure_hash = vnpay_data['vnp_SecureHash']
+    # semester_fee_id = session["chonse_semester_fee"]
 
-    # Kiểm tra chữ ký hash
-    computed_hash = hashlib.sha256(f"{VNPAY_HASH_SECRET_KEY}&{hash_data}".encode('utf-8')).hexdigest()
-
-    if secure_hash == computed_hash:
-        # Chữ ký hợp lệ, xử lý thông tin thanh toán ở đây
-        return "Thanh toán thành công!"
-    else:
-        # Chữ ký không hợp lệ, xử lý lỗi ở đây
-        return "Lỗi xác thực chữ ký hash!"
-
-
-# # Xử lý IPN URL
-# @app.route('/payment_ipn', methods=['GET'])
-# def payment_ipn():
-#     selected_fee_ids = request.args.getlist('selected_fees[]')
-#     if selected_fee_ids:
-#
-#         vnp.responseData = selected_fee_ids
-#         # ...Xử lý dữ liệu và kiểm tra chữ ký
-#         if vnp.validate_response(VNPAY_HASH_SECRET_KEY):
-#             # Xử lý kết quả thanh toán và cập nhật vào Database
-#             # ...
-#             return jsonify({'RspCode': '00', 'Message': 'Confirm Success'})
-#         else:
-#             return jsonify({'RspCode': '97', 'Message': 'Invalid Signature'})
-#     else:
-#         return jsonify({'RspCode': '99', 'Message': 'Invalid request'})
-#
-#
-# # Xử lý ReturnURL
-# @app.route('/payment_return', methods=['GET'])
-# def payment_return():
-#     selected_fee_ids = request.form.getlist('selected_fees[]')
-#
-#     if selected_fee_ids:
-#         vnp.responseData = selected_fee_ids
-#         # ...Xử lý dữ liệu và kiểm tra chữ ký
-#         if vnp.validate_response(VNPAY_HASH_SECRET_KEY):
-#             # Hiển thị thông tin kết quả thanh toán cho khách hàng
-#             # Truyền thêm thông tin về các học phí đã chọn vào template
-#             return render_template("payment_return.html", title="Kết quả thanh toán", result="Thành công",
-#                                    order_id=1, amount=1, selected_fee_ids=selected_fee_ids)
-#         else:
-#             return render_template("payment_return.html", title="Kết quả thanh toán", result="Lỗi", msg="Sai checksum")
-#     else:
-#         return render_template("payment_return.html", title="Kết quả thanh toán")
+    return render_template('payment_return.html', success=success)
 
 
 @login.user_loader
@@ -410,7 +348,6 @@ def forget_pass():
         username = request.form.get('username')
         if username:
             user = dao.get_user_by_username(username, int(setofpermission))
-            print(user)
 
             if user:
                 user_mail = user.email
@@ -455,7 +392,7 @@ def change_password():
             return redirect(url_for('user_login'))
         else:
             error_message = 'Passwords do not match. Please try again.'
-    return render_template('change_password.html', username=username,error_message=error_message)
+    return render_template('change_password.html', username=username, error_message=error_message)
 
 
 # @app.context_processor

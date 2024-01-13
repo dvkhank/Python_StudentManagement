@@ -1,56 +1,61 @@
 import hashlib
 import hmac
-from datetime import datetime
-from random import randint
-import logging
+import urllib.parse
 
-class VNPAY:
-    def __init__(self, tmn_code, hash_secret_key, test_url):
-        self.request_data = {
-            'vnp_Version': '2.1.0',
-            'vnp_Command': 'pay',
-            'vnp_TmnCode': tmn_code,
-            'vnp_CreateDate': datetime.now().strftime('%Y%m%d%H%M%S'),
-            'vnp_IpAddr': '192.168.1.102',
-            'vnp_CurrCode': 'VND',
-            'vnp_Locale': 'vn',
-        }
-        self.hash_secret_key = hash_secret_key
-        self.test_url = test_url
+class Vnpay:
+    requestData = {}
+    responseData = {}
 
-    def set_order_info(self, amount, info, order_type, return_url):
-        self.request_data['vnp_Amount'] = amount * 100  # Convert amount to cents
-        self.request_data['vnp_OrderInfo'] = info
-        self.request_data['vnp_OrderType'] = order_type
-        self.request_data['vnp_ReturnUrl'] = return_url
-        self.request_data['vnp_TxnRef'] = randint(1, 999)
+    def get_payment_url(self, vnpay_payment_url, secret_key):
+        # Dữ liệu thanh toán được sắp xếp dưới dạng danh sách các cặp khóa-giá trị theo thứ tự tăng dần của khóa.
+        inputData = sorted(self.requestData.items())
+        # Duyệt qua danh sách đã sắp xếp và tạo chuỗi query sử dụng urllib.parse.quote_plus để mã hóa giá trị
+        queryString = ''
+        hasData = ''
+        seq = 0
+        for key, val in inputData:
+            if seq == 1:
+                queryString = queryString + "&" + key + '=' + urllib.parse.quote_plus(str(val))
+            else:
+                seq = 1
+                queryString = key + '=' + urllib.parse.quote_plus(str(val))
 
-    def get_payment_url(self):
-        try:
-            data_str = "&".join(f"{k}={v}" for k, v in sorted(self.request_data.items()))
-            secure_hash = self.create_secure_hash(data_str)
+        # Sử dụng phương thức __hmacsha512 để tạo mã hash từ chuỗi query và khóa bí mật
+        hashValue = self.__hmacsha512(secret_key, queryString)
+        return vnpay_payment_url + "?" + queryString + '&vnp_SecureHash=' + hashValue
 
-            # Thêm chữ ký vào requestData
-            self.request_data['vnp_SecureHash'] = secure_hash
+    def validate_response(self, vnpay_data, secret_key):
+        # Lấy giá trị của vnp_SecureHash từ dữ liệu vnpay_data.
+        vnp_SecureHash = vnpay_data.get('vnp_SecureHash', '')
 
-            # Tạo URL thanh toán
-            payment_url = self.test_url + '?' + "&".join(f"{k}={v}" for k, v in sorted(self.request_data.items()))
+        # Loại bỏ các tham số liên quan đến mã hash
+        vnpay_data.pop('vnp_SecureHash', None)
+        vnpay_data.pop('vnp_SecureHashType', None)
 
-            # Log thông tin gửi đi
-            logging.debug("Payment URL: %s", payment_url)
+        # Sắp xếp dữ liệu (inputData)
+        inputData = sorted(vnpay_data.items())
 
-            return payment_url
-        except Exception as e:
-            logging.error("Error generating payment URL: %s", str(e))
-            raise
+        hasData = ''
+        seq = 0
+        for key, val in inputData:
+            if str(key).startswith('vnp_'):
+                if seq == 1:
+                    hasData = hasData + "&" + str(key) + '=' + urllib.parse.quote_plus(str(val))
+                else:
+                    seq = 1
+                    hasData = str(key) + '=' + urllib.parse.quote_plus(str(val))
 
-    def create_secure_hash(self, data_str):
-        try:
-            key = bytes(self.hash_secret_key, 'utf-8')
-            data = bytes(data_str, 'utf-8')
-            secure_hash = hmac.new(key, msg=data, digestmod=hashlib.sha512).hexdigest().upper()
-            logging.debug("Generated Secure Hash: %s", secure_hash)
-            return secure_hash
-        except Exception as e:
-            logging.error("Error creating secure hash: %s", str(e))
-            raise
+        # Tạo mã hash
+        hashValue = self.__hmacsha512(secret_key, hasData)
+
+        print(
+            'Validate debug, HashData:' + hasData + "\n HashValue:" + hashValue + "\nInputHash:" + vnp_SecureHash)
+
+        return vnp_SecureHash == hashValue
+
+    # tạo mã hash dựa trên thuật toán HMAC-SHA-512
+    @staticmethod
+    def __hmacsha512(key, data):
+        byteKey = key.encode('utf-8')
+        byteData = data.encode('utf-8')
+        return hmac.new(byteKey, byteData, hashlib.sha512).hexdigest()
