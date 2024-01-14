@@ -156,6 +156,16 @@ def user_logout():
 #         login_user(user)
 #         print(admin)
 #     return redirect("/admin")
+@app.route("/export_scoresheet", methods=['get', 'post'])
+def export_scoresheet():
+    semester = dao.load_semester()
+    if request.method.__eq__('GET'):
+        chosen_semester = request.args.get('semester')
+        student_scores = dao.load_export_score(chosen_semester)
+
+
+    return render_template('export_scoresheet.html', semester=semester, student_scores=student_scores)
+
 
 
 @app.route("/profile")
@@ -185,9 +195,8 @@ def check_results():
         chosen_semester = request.args.get('semester')
         score_values = dao.get_score_for_student(current_user.id, chosen_semester)
 
-    return render_template('check_results.html',semester=semester, scores=score_values, student_name = current_user.first_name)
-
-
+    return render_template('check_results.html', semester=semester, scores=score_values,
+                           student_name=current_user.first_name)
 
 
 VNPAY_TERMINAL_ID = 'A18060DP'
@@ -217,7 +226,8 @@ def payment():
         vnp.requestData['vnp_IpAddr'] = "127.0.0.1"
         vnp.requestData['vnp_ReturnUrl'] = "http://127.0.0.1:5000/vnpay_return"
         vnpay_payment_url = vnp.get_payment_url(VNPAY_TEST_URL, VNPAY_HASH_SECRET_KEY)
-        print(vnpay_payment_url)
+        selected_fees = request.form.getlist('selected_fees[]')
+        session['selected_fees'] = selected_fees
         return redirect(vnpay_payment_url)
 
 
@@ -228,18 +238,22 @@ def vnpay_return():
     vnp = vnpay.Vnpay()
     success = vnp.validate_response(vnpay_data, secret_key)
 
-    # amount = int(vnpay_data['vnp_Amount']),
-    # bank_code = vnpay_data['vnp_BankCode'],
-    # order_info = vnpay_data['vnp_OrderInfo'],
-    # pay_date = vnpay_data['vnp_PayDate'],
-    # response_code = vnpay_data['vnp_ResponseCode'],
-    # tmn_code = vnpay_data['vnp_TmnCode'],
-    # transaction_no = vnpay_data['vnp_TransactionNo'],
-    # transaction_status = vnpay_data['vnp_TransactionStatus'],
-    # txn_ref = vnpay_data['vnp_TxnRef'],
+    amount = int(vnpay_data['vnp_Amount']),
+    bank_code = vnpay_data['vnp_BankCode'],
+    order_info = vnpay_data['vnp_OrderInfo'],
+    pay_date = vnpay_data['vnp_PayDate'],
+    response_code = vnpay_data['vnp_ResponseCode'],
+    tmn_code = vnpay_data['vnp_TmnCode'],
+    transaction_no = vnpay_data['vnp_TransactionNo'],
+    transaction_status = vnpay_data['vnp_TransactionStatus'],
+    txn_ref = vnpay_data['vnp_TxnRef'],
     # secure_hash = vnpay_data['vnp_SecureHash']
-    # semester_fee_id = session["chonse_semester_fee"]
-
+    selected_fees = session['selected_fees']
+    for fee_id in selected_fees:
+        dao.add_payment(student_id=current_user.id, fee_semester_id=fee_id, amount=amount, bank_code=bank_code,
+                        order_info=order_info, pay_date=pay_date, response_code=response_code,
+                        tmn_code=tmn_code, transaction_no=transaction_no, transaction_status=transaction_status,
+                        txn_ref=txn_ref)
     return render_template('payment_return.html', success=success)
 
 

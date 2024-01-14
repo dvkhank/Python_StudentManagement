@@ -48,6 +48,7 @@ class User(Base1, UserMixin):
 class Student(User):
     __tablename__ = 'student'
     student_class = relationship('Student_Class', backref='student', lazy=True)
+    payments = relationship("Payment", backref="student", lazy=True)
 
 
 class Class(Base2):
@@ -130,6 +131,8 @@ class Fee(Base2):
 class Fee_Semester(Base1):
     fee_id = Column(Integer, ForeignKey(Fee.id), nullable=False)
     semester_id = Column(Integer, ForeignKey(Semester.id), nullable=False)
+    payments = relationship("Payment", backref="fee_semester", lazy=True)
+
 
 
 class Subject(Base2):
@@ -138,6 +141,19 @@ class Subject(Base2):
     subject_teacher = relationship('Subject_Teacher', backref='subject', lazy=True)
     head_teacher = Column(Integer, ForeignKey(Teacher.id), nullable=False, unique=True)
 
+class Payment(Base1):
+    student_id = Column(Integer, ForeignKey(Student.id), nullable=False)
+    fee_semester_id = Column(Integer, ForeignKey(Fee_Semester.id), nullable=False)
+    amount = db.Column(db.Integer)
+    bank_code = db.Column(db.String(10))
+    order_info = db.Column(db.String(255))
+    pay_date = db.Column(db.String(14))
+    response_code = db.Column(db.String(2))
+    tmn_code = db.Column(db.String(10))
+    transaction_no = db.Column(db.String(20))
+    transaction_status = db.Column(db.String(2))
+    txn_ref = db.Column(db.String(10))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Subject_Teacher(Base1):
     __tablename__ = 'subject_teacher'

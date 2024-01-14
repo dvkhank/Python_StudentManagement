@@ -1,6 +1,6 @@
 from app.models import Teacher, Student, SetOfPermission, Permission_SetOfPermission, Permission, Admin, \
     Staff, Year, Semester, Class, Grade, Student_Class, Subject_Teacher_Class, Subject_Teacher, Subject, TypeOfScore, \
-    Score, Rule, Fee, Fee_Semester
+    Score, Rule, Fee, Fee_Semester, Payment
 from app import app, db
 from sqlalchemy import func, case
 import hashlib
@@ -146,19 +146,19 @@ def load_year():
 
 
 def load_fee(semester_id):
-    return db.session.query(Fee).filter(Semester.id == semester_id, Fee.id == Fee_Semester.fee_id,
+    return db.session.query(Fee.fee,Fee.name, Fee_Semester.id).filter(Semester.id == semester_id, Fee.id == Fee_Semester.fee_id,
                                         Semester.id == Fee_Semester.semester_id).all()
 
 
-# def add_payment(student_id, semester_fee_id, amount, bank_code, order_info, pay_date, response_code, tmn_code,
-#                 transaction_no, transaction_status, txn_ref, secure_hash):
-#     payment = Payment(
-#         student_id=student_id, semester_fee_id=semester_fee_id, amount=amount, bank_code=bank_code,
-#         order_info=order_info, pay_date=pay_date, response_code=response_code, tmn_code=tmn_code,
-#         transaction_no= transaction_no, transaction_status=transaction_status, txn_ref=txn_ref, secure_hash=secure_hash
-#     )
-#     db.session.add(payment)
-#     db.session.commit()
+def add_payment(student_id,   fee_semester_id, amount, bank_code, order_info, pay_date, response_code, tmn_code,
+                transaction_no, transaction_status, txn_ref):
+    payment = Payment(
+        student_id=student_id,   fee_semester_id=  fee_semester_id, amount=amount, bank_code=bank_code,
+        order_info=order_info, pay_date=pay_date, response_code=response_code, tmn_code=tmn_code,
+        transaction_no= transaction_no, transaction_status=transaction_status, txn_ref=txn_ref
+    )
+    db.session.add(payment)
+    db.session.commit()
 
 
 def load_semester():
@@ -174,6 +174,21 @@ def load_name_semester(class_id, semester_id):
 def load_semester():
     with app.app_context():
         return db.session.query(Semester, Year).filter(Semester.year_id == Year.id).all()
+
+def load_export_score(semester_id):
+    return db.session.query(
+        Student.first_name.label('student_name'),
+        Score.score,
+        TypeOfScore.name.label('score_type'),
+        Subject.name.label('subject_name')
+    ).join(Student_Class, Score.student_class_id == Student_Class.id) \
+        .join(Subject_Teacher_Class, Score.subject_teacher_class_id == Subject_Teacher_Class.id) \
+        .join(TypeOfScore, Score.typeofscore_id == TypeOfScore.id) \
+        .join(Subject_Teacher, Subject_Teacher_Class.subject_teacher_id == Subject_Teacher.id) \
+        .join(Subject, Subject_Teacher.subject_id == Subject.id) \
+        .filter(Student_Class.semester_id == semester_id) \
+        .order_by(Student.first_name, TypeOfScore.name, Subject.name).all()
+
 
 
 def load_classes():
