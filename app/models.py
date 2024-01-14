@@ -1,7 +1,7 @@
 import enum
 import hashlib
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Double
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Float
 from sqlalchemy.orm import relationship
 from app import db, app
 from flask_login import UserMixin
@@ -175,7 +175,7 @@ class Score(Base1):
     __tablename__ = 'score'
     student_class_id = Column(Integer, ForeignKey(Student_Class.id), nullable=False)
     subject_teacher_class_id = Column(Integer, ForeignKey(Subject_Teacher_Class.id), nullable=False)
-    score = Column(Double)
+    score = Column(Float)
     typeofscore_id = Column(Integer, ForeignKey('typeofscore.id'), nullable=False)
 
     def __str__(self):
@@ -184,7 +184,7 @@ class Score(Base1):
 
 class TypeOfScore(Base2):
     __tablename__ = 'typeofscore'
-    factor = Column(Double, nullable=False)
+    factor = Column(Float, nullable=False)
     scores = relationship(Score, backref='typeofscore', lazy=True)
 
 
