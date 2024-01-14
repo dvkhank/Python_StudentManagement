@@ -1,0 +1,58 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row mt-5 pt-5">
+        <div class="tab-pane fade show col-xl-7">
+            <h1 class="text-center mb-4">
+                <i class="fa-regular fa-address-card mr-2"></i>Information Student
+            </h1>
+            <form class="row" method="get" action="export_scoresheet">
+                <div class="col-md-12 form-holder">
+                    <label class="form-label h6">
+                        <i class="fa-solid fa-signature mr-2"></i>
+                        Semester
+                    </label>
+                    <select class="w-100 p-1 text-center" name="semester">
+                        {% for s in semester %}
+                        <option value="{{s.Semester.id}}">{{ s.Semester.name }} - {{ s.Year.year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-5 m-auto">
+                    <button type="submit" class="text-center">
+                        Check
+                    </button>
+                </div>
+                <div class="container mt-5">
+                    <h2>Student Scores</h2>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Tên Học Sinh</th>
+                            <th scope="col">Điểm</th>
+                            <th scope="col">Loại Điểm</th>
+                            <th scope="col">Môn Học</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for student_score in student_scores %}
+                        <tr>
+                            <td>{{ student_score.student_name }}</td>
+                            <td>{{ student_score.score }}</td>
+                            <td>{{ student_score.score_type }}</td>
+                            <td>{{ student_score.subject_name }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </form>
+
+
+        </div>
+
+    </div>
+</div>
+{%  endblock  %}
